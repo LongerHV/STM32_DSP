@@ -1,9 +1,11 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"name": "STM32_DSP",
+			"path": "C:\\Users\\Longer\\Documents\\PlatformIO\\Projects\\STM32_DSP"
 		},
 		{
+			"name": "Drivers",
 			"path": "C:\\Users\\Longer\\.platformio\\packages\\framework-stm32cube\\h7\\Drivers"
 		}
 	],
