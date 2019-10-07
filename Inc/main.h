@@ -103,6 +103,7 @@ void Error_Handler(void);
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+#define PWR_REGULATOR_VOLTAGE_SCALE0  ((uint32_t)0x00000000)
 #define BLOCK_SIZE 16
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4

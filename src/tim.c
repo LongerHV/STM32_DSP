@@ -98,12 +98,12 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM2){
-    HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+    // HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
 
     for (uint8_t i = 0; i < NO_OF_CHANNELS; i++){
       input_buffer[i][block_counter] = input_sample[i];
     }
-    // input_buffer[block_counter] = input_sample[0];
+
     block_counter++;
     if (block_counter >= BLOCK_SIZE){
       block_counter = 0;

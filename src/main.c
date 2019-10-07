@@ -112,6 +112,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
 
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
 
   // Setting up the buffers
   for (uint8_t i = 0; i < NO_OF_BUFFERS; i++){
