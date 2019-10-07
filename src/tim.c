@@ -33,11 +33,11 @@ void MX_TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 39;
+  htim2.Init.Prescaler = 1200;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 500;
+  htim2.Init.Period = 50000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
@@ -66,10 +66,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
   /* USER CODE END TIM2_MspInit 0 */
     /* TIM2 clock enable */
     __HAL_RCC_TIM2_CLK_ENABLE();
-
-    /* TIM2 interrupt Init */
-    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
   /* USER CODE END TIM2_MspInit 1 */
@@ -99,16 +95,17 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM2){
     // HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+  HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
 
-    for (uint8_t i = 0; i < NO_OF_CHANNELS; i++){
-      input_buffer[i][block_counter] = input_sample[i];
-    }
+    // for (uint8_t i = 0; i < NO_OF_CHANNELS; i++){
+    //   input_buffer[i][block_counter] = input_sample[i];
+    // }
 
-    block_counter++;
-    if (block_counter >= BLOCK_SIZE){
-      block_counter = 0;
-      block_ready = 1;
-    }
+    // block_counter++;
+    // if (block_counter >= BLOCK_SIZE){
+    //   block_counter = 0;
+    //   block_ready = 1;
+    // }
   }
 }
 
