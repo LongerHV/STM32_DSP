@@ -109,6 +109,7 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
+  HAL_ADC_Start_DMA(&hadc3, &input_sample, 2);
   HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1);
   HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2);
   // HAL_ADC_Start_DMA(&hadc3, input_sample, 2);
