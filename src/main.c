@@ -53,12 +53,12 @@
 /* USER CODE BEGIN PV */
 uint8_t block_counter = 0;
 uint8_t block_ready = 0;
-uint16_t** buffer[4];
+uint16_t buffer[8][16];
+uint32_t input_sample[2];
 uint16_t** input_buffer;
 uint16_t** hidden_buffer;
 uint16_t** output_buffer;
 uint16_t** temp_buffer;
-uint32_t input_sample[256];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -111,29 +111,30 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   // Setting up the buffers
-  for (uint8_t i = 0; i < NO_OF_BUFFERS; i++){
-    buffer[i] = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
-    for (uint8_t j = 0; j < NO_OF_CHANNELS; j++){
-      buffer[i][j] = (uint16_t*) malloc(BLOCK_SIZE * sizeof(uint16_t));
-      for (uint8_t k = 0; k < BLOCK_SIZE; k++){
-        buffer[i][j][k] = 0;
-      }
+  for (uint8_t i = 0; i < 8; i++){
+    for (uint8_t j = 0; j < BLOCK_SIZE; j++){
+      // buffer[i][j] = 0;
+      buffer[i][j] = i + j;
     }
   }
 
-  // for (uint16_t i = 0; i < 256; i++){
-  //   input_sample[i] = i;
-  // }
+  input_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
+  hidden_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
+  output_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
+  temp_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
 
-  // Setting up pointers to the buffers
-  input_buffer = buffer[0];
-  hidden_buffer = buffer[1];
-  output_buffer = buffer[2];
-  temp_buffer = buffer[3];
+  input_buffer[0] = buffer[0];
+  input_buffer[1] = buffer[1];
+  hidden_buffer[0] = buffer[2];
+  hidden_buffer[1] = buffer[3];
+  output_buffer[0] = buffer[4];
+  output_buffer[1] = buffer[5];
+  temp_buffer[0] = buffer[6];
+  temp_buffer[1] = buffer[7];
 
   // Starting peripherials
-  if (HAL_ADC_Start(&hadc3) != HAL_OK) return 0;
-  if (HAL_ADC_Start_DMA(&hadc3, (uint32_t*)input_sample, 512) != HAL_OK) return 0;
+  // if (HAL_ADC_Start(&hadc3) != HAL_OK) return 0;
+  if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK) return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK) return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK) return 0;
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) return 0;
@@ -156,8 +157,11 @@ int main(void)
         output_buffer = hidden_buffer;
         hidden_buffer = input_buffer;
         input_buffer = temp;
+
+        // Clearing the input buffer
         for (uint8_t i = 0; i < BLOCK_SIZE; i++){
-          input_buffer[i] = 0;
+          input_buffer[0][i] = 0;
+          input_buffer[1][i] = 0;
         }
 
         // CODE HERE 
