@@ -58,7 +58,7 @@ uint16_t** input_buffer;
 uint16_t** hidden_buffer;
 uint16_t** output_buffer;
 uint16_t** temp_buffer;
-uint32_t input_sample[2];
+uint32_t input_sample[2] = {0, 0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,19 +109,19 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1);
+  HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2);
   // HAL_ADC_Start_DMA(&hadc3, input_sample, 2);
   // HAL_ADC_Start(&hadc3);
-
-  // HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-  // HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
 
   // Setting up the buffers
   for (uint8_t i = 0; i < NO_OF_BUFFERS; i++){
     buffer[i] = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
     for (uint8_t j = 0; j < NO_OF_CHANNELS; j++){
       buffer[i][j] = (uint16_t*) malloc(BLOCK_SIZE * sizeof(uint16_t));
+      for (uint8_t k = 0; k < BLOCK_SIZE; k++){
+        buffer[i][j][k] = 0;
+      }
     }
   }
 
@@ -130,6 +130,12 @@ int main(void)
   hidden_buffer = buffer[1];
   output_buffer = buffer[2];
   temp_buffer = buffer[3];
+
+  HAL_TIM_Base_Start_IT(&htim2);
+
+  // HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  // HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
 
   /* USER CODE END 2 */
 
