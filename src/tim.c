@@ -103,17 +103,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
     // Reading samples from input to buffer
     input_buffer[0][block_counter] = (uint16_t)input_sample[0];
-    // input_buffer[1][block_counter] = (uint16_t)input_sample[1];
+    input_buffer[1][block_counter] = (uint16_t)input_sample[1];
 
-    // block_counter++;
-    // if (block_counter >= BLOCK_SIZE){
-    //   block_counter = 0;
-    //   block_ready = 1;
-    // }
+    block_counter++;
+    if (block_counter >= BLOCK_SIZE){
+      block_counter = 0;
+      block_ready = 1;
+    }
 
     // Writing samples to output
-    // HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, output_buffer[0][block_counter]);
-    // HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_2, DAC_ALIGN_12B_R, output_buffer[1][block_counter]);
+    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, output_buffer[0][block_counter]);
+    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_2, DAC_ALIGN_12B_R, output_buffer[1][block_counter]);
   }
 }
 
