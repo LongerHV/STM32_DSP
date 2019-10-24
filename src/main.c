@@ -53,7 +53,7 @@
 /* USER CODE BEGIN PV */
 uint8_t block_counter = 0;
 uint8_t block_ready = 0;
-uint16_t buffer[8][16];
+uint16_t buffer[8][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".dma_buffer"))) input_sample[2];
 uint16_t** input_buffer;
@@ -114,18 +114,9 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-  // Setting up the buffers
-  // for (uint8_t i = 0; i < 8; i++){
-  //   for (uint8_t j = 0; j < BLOCK_SIZE; j++){
-  //     // buffer[i][j] = 0;
-  //     buffer[i][j] = i + j;
-  //   }
-  // }
-
   input_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
   hidden_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
   output_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
-  temp_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
 
   input_buffer[0] = buffer[0];
   input_buffer[1] = buffer[1];
@@ -133,8 +124,6 @@ int main(void)
   hidden_buffer[1] = buffer[3];
   output_buffer[0] = buffer[4];
   output_buffer[1] = buffer[5];
-  temp_buffer[0] = buffer[6];
-  temp_buffer[1] = buffer[7];
 
   // Starting peripherials
   // if (HAL_ADC_Start(&hadc3) != HAL_OK) return 0;
