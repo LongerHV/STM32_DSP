@@ -114,28 +114,16 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-  // input_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
-  // hidden_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
-  // output_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
-
-  // input_buffer[0] = buffer[0];
-  // input_buffer[1] = buffer[1];
-  // hidden_buffer[0] = buffer[2];
-  // hidden_buffer[1] = buffer[3];
-  // output_buffer[0] = buffer[4];
-  // output_buffer[1] = buffer[5];
   input_buffer = buffer[0];
   hidden_buffer = buffer[2];
   output_buffer = buffer[4];
   temp_buffer = buffer[6];
 
   // Starting peripherials
-  // if (HAL_ADC_Start(&hadc3) != HAL_OK) return 0;
   if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK) return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK) return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK) return 0;
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) return 0;
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -148,11 +136,11 @@ int main(void)
       output_buffer = hidden_buffer;
       hidden_buffer = input_buffer;
       input_buffer = temp;
-
-      block_ready = 0;
       // CODE HERE (modify hidden buffer)
 
       // CODE ENDS HERE
+
+      block_ready = 0;
     }
   }
     /* USER CODE END WHILE */
