@@ -84,7 +84,7 @@ extern uint8_t block_counter;
 extern uint8_t block_ready;
 extern uint16_t** input_buffer;
 extern uint16_t** output_buffer;
-extern uint32_t input_sample[];
+extern uint32_t input_sample[2];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

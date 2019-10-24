@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : TIM.h
+  * File Name          : SYS.c
   * Description        : This file provides code for the configuration
-  *                      of the TIM instances.
+  *                      of the SYS instances.
   ******************************************************************************
   * @attention
   *
@@ -16,43 +16,22 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __tim_H
-#define __tim_H
-#ifdef __cplusplus
- extern "C" {
-#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "sys.h"
 
-/* USER CODE BEGIN Includes */
-#include "dac.h"
-/* USER CODE END Includes */
+/* USER CODE BEGIN 0 */
 
-extern TIM_HandleTypeDef htim2;
+/* USER CODE END 0 */
 
-/* USER CODE BEGIN Private defines */
-extern uint32_t input_sample[2];
-/* USER CODE END Private defines */
+/* SYS init function */
+void MX_SYS_Init(void)
+{
 
-void MX_TIM2_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-/* USER CODE END Prototypes */
-
-#ifdef __cplusplus
 }
-#endif
-#endif /*__ tim_H */
 
-/**
-  * @}
-  */
+/* USER CODE BEGIN 1 */
 
-/**
-  * @}
-  */
+/* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -54,7 +54,8 @@
 uint8_t block_counter = 0;
 uint8_t block_ready = 0;
 uint16_t buffer[8][16];
-uint32_t input_sample[2];
+// remember to specify in STM32H743ZI_FLASH.LD linker file
+uint32_t __attribute__((section(".dma_buffer"))) input_sample[2];
 uint16_t** input_buffer;
 uint16_t** hidden_buffer;
 uint16_t** output_buffer;
@@ -84,6 +85,9 @@ int main(void)
   /* USER CODE END 1 */
   
 
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -111,12 +115,12 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   // Setting up the buffers
-  for (uint8_t i = 0; i < 8; i++){
-    for (uint8_t j = 0; j < BLOCK_SIZE; j++){
-      // buffer[i][j] = 0;
-      buffer[i][j] = i + j;
-    }
-  }
+  // for (uint8_t i = 0; i < 8; i++){
+  //   for (uint8_t j = 0; j < BLOCK_SIZE; j++){
+  //     // buffer[i][j] = 0;
+  //     buffer[i][j] = i + j;
+  //   }
+  // }
 
   input_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
   hidden_buffer = (uint16_t**) malloc(NO_OF_CHANNELS * sizeof(uint16_t*));
@@ -140,7 +144,7 @@ int main(void)
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) return 0;
 
   // HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  // HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
   // HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
 
 
@@ -150,24 +154,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      if (block_ready){
+    if (block_ready){
 
-        // Swapping buffers
-        uint16_t** temp = output_buffer;
-        output_buffer = hidden_buffer;
-        hidden_buffer = input_buffer;
-        input_buffer = temp;
+      // Swapping buffers
+      uint16_t** temp = output_buffer;
+      output_buffer = hidden_buffer;
+      hidden_buffer = input_buffer;
+      input_buffer = temp;
 
-        // Clearing the input buffer
-        for (uint8_t i = 0; i < BLOCK_SIZE; i++){
-          input_buffer[0][i] = 0;
-          input_buffer[1][i] = 0;
-        }
-
-        // CODE HERE 
-
-        // CODE ENDS HERE
-      }
+      block_ready = 0;
+      // CODE HERE (modify hidden buffer)
+      // CODE ENDS HERE
+    }
   }
     /* USER CODE END WHILE */
 
@@ -195,16 +193,15 @@ void SystemClock_Config(void)
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
   /** Macro to configure the PLL clock source 
   */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSI);
+  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 45;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 1;
+  RCC_OscInitStruct.PLL.PLLN = 99;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 20;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -233,14 +230,14 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInitStruct.PLL2.PLL2M = 4;
-  PeriphClkInitStruct.PLL2.PLL2N = 9;
+  PeriphClkInitStruct.PLL2.PLL2M = 1;
+  PeriphClkInitStruct.PLL2.PLL2N = 50;
   PeriphClkInitStruct.PLL2.PLL2P = 1;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 2;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
-  PeriphClkInitStruct.PLL2.PLL2FRACN = 3072;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
