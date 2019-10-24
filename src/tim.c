@@ -94,21 +94,13 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM2){
-    for (uint8_t i = 0; i < NO_OF_CHANNELS; i++){
-      input_buffer[i][block_counter] = input_sample[i];
-    }
-
     // Reading samples from input to buffer
-    input_buffer[0][block_counter] = (uint16_t)input_sample[0];
-    input_buffer[1][block_counter] = (uint16_t)input_sample[1];
+    input_buffer[block_counter] = (uint16_t)input_sample[0];
+    input_buffer[block_counter+BLOCK_SIZE] = (uint16_t)input_sample[1];
 
     // Writing samples to output
-    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, output_buffer[0][block_counter]>>4);
-    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_2, DAC_ALIGN_12B_R, output_buffer[1][block_counter]>>4);
-
-    // Cleaning sample from ootput buffer
-    output_buffer[0][block_counter] = 0;
-    output_buffer[1][block_counter] = 0;
+    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, output_buffer[block_counter]>>4);
+    HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_2, DAC_ALIGN_12B_R, output_buffer[block_counter+BLOCK_SIZE]>>4);
 
     block_counter++;
     if (block_counter >= BLOCK_SIZE){

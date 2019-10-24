@@ -33,7 +33,7 @@
 extern TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN Private defines */
-extern uint32_t input_sample[2];
+
 /* USER CODE END Private defines */
 
 void MX_TIM2_Init(void);

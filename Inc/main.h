@@ -82,8 +82,10 @@ void Error_Handler(void);
 
 extern uint8_t block_counter;
 extern uint8_t block_ready;
-extern uint16_t** input_buffer;
-extern uint16_t** output_buffer;
+extern uint16_t* input_buffer;
+extern uint16_t* hidden_buffer;
+extern uint16_t* output_buffer;
+extern uint16_t* temp_buffer;
 extern uint32_t input_sample[2];
 /* USER CODE END Private defines */
 
