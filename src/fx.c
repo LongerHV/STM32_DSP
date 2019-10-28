@@ -13,6 +13,15 @@ void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize){
         pDst[i] ^= (uint16_t)1 << 15;
 }
 
+void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t wet, float32_t *pData){
+    delay->pData = pData;
+    delay->MaxSize = size;
+    delay->Offset = offset;
+    delay->Index = 0;
+    delay->Feedback = feedback;
+    delay->Wet = wet;
+}
+
 void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize){
     uint16_t tail;
     for(uint16_t i = 0; i < blockSize; i++){

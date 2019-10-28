@@ -133,19 +133,9 @@ int main(void)
 
   // Initializing effects
   FX_DelayTypeDef fxdelay1;
-  fxdelay1.Feedback = 0.3;
-  fxdelay1.Index = 0;
-  fxdelay1.MaxSize = 24000;
-  fxdelay1.Offset = 20000;
-  fxdelay1.pData = delay_buffer1;
-  fxdelay1.Wet = 0.7;
+  fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 0.7, delay_buffer1);
   FX_DelayTypeDef fxdelay2;
-  fxdelay2.Feedback = 0.3;
-  fxdelay2.Index = 0;
-  fxdelay2.MaxSize = 24000;
-  fxdelay2.Offset = 18000;
-  fxdelay2.pData = delay_buffer2;
-  fxdelay2.Wet = 0.7;
+  fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 0.7, delay_buffer1);
 
   /* USER CODE END 2 */
 
