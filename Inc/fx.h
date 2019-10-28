@@ -25,7 +25,7 @@ typedef struct{
 // Function prototypes
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize);
 void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize);
-void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
+void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize);
 
 #ifdef __cplusplus
 }

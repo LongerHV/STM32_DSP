@@ -56,6 +56,8 @@ uint8_t block_ready = 0;
 uint16_t buffer[8][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
+float32_t __attribute__((section(".axi_sram_d1")))delay_buffer1[24000];
+float32_t __attribute__((section(".axi_sram_d1")))delay_buffer2[24000];
 uint16_t* input_buffer;
 uint16_t* hidden_buffer;
 uint16_t* output_buffer;
@@ -128,6 +130,23 @@ int main(void)
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK) return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK) return 0;
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK) return 0;
+
+  // Initializing effects
+  FX_DelayTypeDef fxdelay1;
+  fxdelay1.Feedback = 0.3;
+  fxdelay1.Index = 0;
+  fxdelay1.MaxSize = 24000;
+  fxdelay1.Offset = 20000;
+  fxdelay1.pData = delay_buffer1;
+  fxdelay1.Wet = 0.7;
+  FX_DelayTypeDef fxdelay2;
+  fxdelay2.Feedback = 0.3;
+  fxdelay2.Index = 0;
+  fxdelay2.MaxSize = 24000;
+  fxdelay2.Offset = 18000;
+  fxdelay2.pData = delay_buffer2;
+  fxdelay2.Wet = 0.7;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,7 +158,8 @@ int main(void)
       fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
       // CODE HERE (modify data)
 
-
+      fx_delay(&fxdelay1, data[0], BLOCK_SIZE);
+      fx_delay(&fxdelay2, data[1], BLOCK_SIZE);
 
       // CODE ENDS HERE
       // Convert data back to 16 bit unsigned integer
