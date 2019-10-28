@@ -33,7 +33,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "arm_math.h"
+#include "arm_const_structs.h"
+#include <stdlib.h>
+#include "fx.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -80,6 +83,8 @@ void Error_Handler(void);
 #define BLOCK_SIZE 16
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
+#define ADC_RESOLUTION 16
+#define MAGIC_DIVISOR ((float32_t)1/(pow(2,ADC_RESOLUTION)))
 
 extern uint8_t block_counter;
 extern uint8_t block_ready;

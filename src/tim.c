@@ -104,6 +104,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
     block_counter++;
     if (block_counter >= BLOCK_SIZE){
+      // Swapping buffers
+      uint16_t* temp = output_buffer;
+      output_buffer = hidden_buffer;
+      hidden_buffer = input_buffer;
+      input_buffer = temp;
       block_counter = 0;
       block_ready = 1;
     }

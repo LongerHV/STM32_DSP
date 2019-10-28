@@ -30,9 +30,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "arm_math.h"
-#include "arm_const_structs.h"
-#include <stdlib.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,6 +60,7 @@ uint16_t* input_buffer;
 uint16_t* hidden_buffer;
 uint16_t* output_buffer;
 uint16_t* temp_buffer;
+float data[2][BLOCK_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -136,15 +135,15 @@ int main(void)
   while (1)
   {
     if (block_ready){
-      // Swapping buffers
-      uint16_t* temp = output_buffer;
-      output_buffer = hidden_buffer;
-      hidden_buffer = input_buffer;
-      input_buffer = temp;
-      // CODE HERE (modify hidden buffer)
+      // Convert data to float
+      fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
+      // CODE HERE (modify data)
+
+
 
       // CODE ENDS HERE
-
+      // Convert data back to 16 bit unsigned integer
+      fx_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
       block_ready = 0;
     }
   }

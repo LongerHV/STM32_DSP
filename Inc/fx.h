@@ -7,6 +7,7 @@ extern "C"
 
 // Includes
 #include "main.h"
+#include "arm_math.h"
 #include "math.h"
 
 // Defines
@@ -22,7 +23,9 @@ typedef struct{
 } FX_DelayTypeDef;
 
 // Function prototypes
-void FX_DELAY(FX_DelayTypeDef *delay, float32_t *pSource, float32_t *pDest, uint16_t size);
+void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize);
+void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize);
+void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
 
 #ifdef __cplusplus
 }
