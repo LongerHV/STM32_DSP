@@ -46,6 +46,7 @@ DTCMRAM (xrw)   : ORIGIN = 0x20000000, LENGTH = 128K
 RAM_D1 (xrw)    : ORIGIN = 0x24000000, LENGTH = 512K
 RAM_D2 (xrw)    : ORIGIN = 0x30000000, LENGTH = 288K
 RAM_D3 (xrw)    : ORIGIN = 0x38000000, LENGTH = 64K
+SDRAM (xrw)     : ORIGIN = 0xD0000000, LENGTH = 4096K
 }
 
 /* Define output sections */
@@ -156,10 +157,25 @@ SECTIONS
     . = ALIGN(4);
   } >DTCMRAM
 
-  .dma_buffer :
+  .axi_sram_d1 :
   {
-    *(.dma_buffer)
+    *(.axi_sram_d1)
+  } >RAM_D1
+
+  .ahb_sram_d2 :
+  {
+    *(.ahb_sram_d2)
   } >RAM_D2
+
+  .ahb_sram_d3 :
+  {
+    *(.ahb_sram_d3)
+  } >RAM_D3
+
+  .sdram :
+  {
+    *(.sdram)
+  } >SDRAM
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

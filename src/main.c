@@ -57,7 +57,7 @@ uint8_t block_counter = 0;
 uint8_t block_ready = 0;
 uint16_t buffer[8][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
-uint32_t __attribute__((section(".dma_buffer"))) input_sample[2];
+uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint16_t* input_buffer;
 uint16_t* hidden_buffer;
 uint16_t* output_buffer;
