@@ -53,7 +53,7 @@
 /* USER CODE BEGIN PV */
 uint8_t block_counter = 0;
 uint8_t block_ready = 0;
-uint16_t buffer[8][BLOCK_SIZE];
+uint16_t buffer[6][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 float32_t __attribute__((section(".axi_sram_d1")))delay_buffer1[24000];
@@ -123,7 +123,6 @@ int main(void)
   input_buffer = buffer[0];
   hidden_buffer = buffer[2];
   output_buffer = buffer[4];
-  temp_buffer = buffer[6];
 
   // Starting peripherials
   if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK) return 0;
@@ -133,9 +132,9 @@ int main(void)
 
   // Initializing effects
   FX_DelayTypeDef fxdelay1;
-  fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 0.7, delay_buffer1);
+  fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 1.0, 0.7, delay_buffer1);
   FX_DelayTypeDef fxdelay2;
-  fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 0.7, delay_buffer1);
+  fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
 
   /* USER CODE END 2 */
 
