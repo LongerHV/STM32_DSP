@@ -23,7 +23,8 @@ typedef struct{
     uint32_t Offset;
     uint32_t Index;
     float32_t Feedback;
-    float32_t Wet;
+    float32_t DryLevel;
+    float32_t WetLevel;
     float32_t *pData;
 } FX_DelayTypeDef;
 
@@ -49,7 +50,7 @@ void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize);
 void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize);
 
 // Delay functions
-void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t wet, float32_t *pData);
+void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData);
 void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize);
 
 // Modulation functions

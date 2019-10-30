@@ -13,17 +13,18 @@ void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize){
         pDst[i] ^= (uint16_t)1 << 15;
 }
 
-void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t wet, float32_t *pData){
+void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData){
     delay->pData = pData;
     delay->MaxSize = size;
     delay->Offset = offset;
     delay->Index = 0;
     delay->Feedback = feedback;
-    delay->Wet = wet;
+    delay->DryLevel = dry;
+    delay->WetLevel = wet;
 }
 
 void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize){
-    uint16_t tail;
+    uint32_t tail;
     for(uint16_t i = 0; i < blockSize; i++){
         // Calculate index of delay tail
         if(delay->Offset > delay->Index){
@@ -36,7 +37,7 @@ void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize){
         delay->pData[delay->Index] = pSrc[i] + (delay->Feedback * delay->pData[delay->Index]);
 
         // Calculate value for output sample
-        pSrc[i] += (delay->Wet * delay->pData[tail]);
+        pSrc[i] = (delay->DryLevel * pSrc[i]) + (delay->WetLevel * delay->pData[tail]);
 
         // Increment delay counter
         if(++delay->Index >= delay->MaxSize){
