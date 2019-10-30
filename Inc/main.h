@@ -62,6 +62,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SPI3_CS_Pin GPIO_PIN_2
+#define SPI3_CS_GPIO_Port GPIOE
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 #define LD1_Pin GPIO_PIN_0
@@ -74,8 +76,18 @@ void Error_Handler(void);
 #define STLINK_TX_GPIO_Port GPIOD
 #define USB_OTG_FS_PWR_EN_Pin GPIO_PIN_10
 #define USB_OTG_FS_PWR_EN_GPIO_Port GPIOD
+#define ENODER_BUTTON_Pin GPIO_PIN_11
+#define ENODER_BUTTON_GPIO_Port GPIOD
+#define ENCODER_B_Pin GPIO_PIN_12
+#define ENCODER_B_GPIO_Port GPIOD
+#define ENCODER_A_Pin GPIO_PIN_13
+#define ENCODER_A_GPIO_Port GPIOD
 #define USB_OTG_FS_OVCR_Pin GPIO_PIN_7
 #define USB_OTG_FS_OVCR_GPIO_Port GPIOG
+#define SPI1_DC_Pin GPIO_PIN_8
+#define SPI1_DC_GPIO_Port GPIOB
+#define SPI1_CS_Pin GPIO_PIN_9
+#define SPI1_CS_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_1
 #define LD2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
