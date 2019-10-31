@@ -1,6 +1,10 @@
 #include "fx.h"
 
 // functions implementation
+float32_t math_atan(float32_t x){
+    return arm_cos_f32(x) / arm_sin_f32(x);
+}
+
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize){
     for(uint32_t i = 0; i < blockSize; i++)
         pSrc[i] ^= (uint16_t)1 << 15;

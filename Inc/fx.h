@@ -45,6 +45,9 @@ typedef struct{
 } FX_ModulationTypeDef;
 
 // Function prototypes
+// Math functions
+float32_t math_atg(float32_t x);
+
 // Data conversion
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize);
 void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize);
