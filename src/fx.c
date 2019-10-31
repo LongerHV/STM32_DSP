@@ -5,6 +5,10 @@ float32_t math_atan(float32_t x){
     return arm_cos_f32(x) / arm_sin_f32(x);
 }
 
+float32_t math_sin2(float32_t x){
+    return pow(arm_sin_f32(x), 2);
+}
+
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize){
     for(uint32_t i = 0; i < blockSize; i++)
         pSrc[i] ^= (uint16_t)1 << 15;
