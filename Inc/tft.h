@@ -7,6 +7,7 @@ extern "C"
 
 // Includes
 #include "main.h"
+#include "characters.h"
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_gpio.h"
 #include "stm32h7xx_hal_spi.h"
@@ -31,7 +32,8 @@ void TFT_SendData(uint8_t data);
 void TFT_SetColumn(uint8_t column);
 void TFT_SetRow(uint8_t row);
 void TFT_Init();
-void TFT_DrawPixel(uint8_t row, uint8_t column, uint16_t colour);
+void TFT_DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
+void TFT_DrawChar(uint8_t Y, uint8_t X, char c);
 
 #ifdef __cplusplus
 }

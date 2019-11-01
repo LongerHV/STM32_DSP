@@ -49,10 +49,28 @@ void TFT_Init(){
 
 }
 
-void TFT_DrawPixel(uint8_t row, uint8_t column, uint16_t colour){
-    TFT_SetColumn(column);
-    TFT_SetRow(row);
+void TFT_DrawPixel(uint8_t Y, uint8_t X, uint16_t colour){
+    TFT_SetRow(Y);
+    TFT_SetColumn(X);
     TFT_SendCommand(TFT_MEMORY_WRITE);
     TFT_SendData(colour >> 8);
     TFT_SendData(colour);
+}
+
+void TFT_DrawChar(uint8_t Y, uint8_t X, char c){
+    uint8_t col;
+    for(uint8_t i = 0; i < CHAR_WIDTH; i++){
+        TFT_SetRow(Y + i);
+        for(uint8_t j = 0; j < CHAR_HEIGHT; j++){
+            TFT_SetColumn(X + j);
+            TFT_SendCommand(TFT_MEMORY_WRITE);
+            if(characters[(uint8_t) c][i] & (0x01 << j)){
+                TFT_SendData(0xFF);
+                TFT_SendData(0xFF);
+            } else{
+                TFT_SendData(0x00);
+                TFT_SendData(0x00);
+            }
+        }
+    }
 }
