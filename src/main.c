@@ -141,13 +141,13 @@ int main(void)
     FX_DelayTypeDef fxdelay2;
     fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
 
-    // TESTING FMC
+    // // TESTING FMC
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
-    // uint32_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     // for(uint32_t i = 0; i < 10; i++){
-    //   sdram_test[i] = Src[i];
-    //   // *(__IO uint32_t *) (0xD0000000 + 4 * i) = Src[i];
-    //   // HAL_SDRAM_Write_32b(&hsdram1, pSdram, Src, 10);
+    //   // sdram_test[i] = Src[i];
+    //   // *(__IO uint32_t *) (0xD0000000 + i) = Src[i];
+    //   HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
     // }
     // uint32_t Dst[10];
     // for(uint32_t i = 0; i < 10; i++){
