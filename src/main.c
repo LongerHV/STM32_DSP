@@ -165,9 +165,10 @@ int main(void)
     TFT_SendCommand(0x29);
 
     // TFT_TEST
-    for(uint16_t i = 0; i < 100; i++){
-      for(uint16_t j = 0; j < 100; j++){
-        TFT_DrawPixel((uint8_t) i, (uint8_t) j, i * j + j);
+    for(uint16_t i = 0; i < 160; i++){
+      for(uint16_t j = 0; j < 128; j++){
+        // TFT_DrawPixel((uint8_t) i, (uint8_t) j, ~(i * j + j));
+        TFT_DrawPixel((uint8_t) i, (uint8_t) j, 0x0000);
       }
     }
 

@@ -16,7 +16,8 @@
 		},
 		"files.associations": {
 			"FMC.C": "cpp",
-			"MAIN.C": "cpp"
+			"MAIN.C": "cpp",
+			"TFT.C": "cpp"
 		}
 	}
 }
