@@ -37,6 +37,7 @@ extern "C" {
 #include "arm_const_structs.h"
 #include <stdlib.h>
 #include "fx.h"
+#include "tft.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -155,6 +155,22 @@ int main(void)
     //   // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
     // }
 
+    // TESTING LCD SPI
+    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+    HAL_Delay(20);
+    TFT_SendCommand(0x11);
+    HAL_Delay(20);
+    TFT_SendCommand(TFT_PIXEL_FORMAT);
+    TFT_SendData(0x05);
+    TFT_SendCommand(0x29);
+
+    // TFT_TEST
+    for(uint16_t i = 0; i < 100; i++){
+      for(uint16_t j = 0; j < 100; j++){
+        TFT_DrawPixel((uint8_t) i, (uint8_t) j, i * j + j);
+      }
+    }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
