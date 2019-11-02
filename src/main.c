@@ -160,20 +160,24 @@ int main(void)
     HAL_Delay(20);
     TFT_SendCommand(0x11);
     HAL_Delay(20);
-    TFT_SendCommand(TFT_PIXEL_FORMAT);
+    TFT_SendCommand(TFT_PIXEL_FORMAT);  // 16 bit pixels
     TFT_SendData(0x05);
     TFT_SendCommand(0x29);
 
     // TFT_TEST
-    for(uint16_t i = 0; i < 160; i++){
-      for(uint16_t j = 0; j < 128; j++){
-        TFT_DrawPixel((uint8_t) i, (uint8_t) j, 0x0008);
-      }
-    }
+    // for(uint16_t i = 0; i < 160; i++){
+    //   for(uint16_t j = 0; j < 128; j++){
+    //     TFT_DrawPixel((uint8_t) i, (uint8_t) j, 0x0010);
+    //   }
+    // }
 
+    TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0008);
+
+    uint8_t index;
     for(uint16_t i = 0; i < 20; i++){
       for(uint16_t j = 0; j < 16; j++){
-        TFT_DrawChar(8 * i, 8 * j, (i * j + j));
+        index = i * 16 + j;
+        TFT_DrawChar(8 * i, 8 * j, index, 0xFFFF, 0x0000);
       }
     }
 

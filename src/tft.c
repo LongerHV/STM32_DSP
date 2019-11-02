@@ -1,4 +1,5 @@
 #include "tft.h"
+#include "characters.h"
 
 // Functions implementations
 void TFT_CS_SET(){
@@ -34,15 +35,29 @@ void TFT_SendData(uint8_t data){
 }
 
 void TFT_SetColumn(uint8_t column){
-    TFT_SendCommand(TFT_COLUMN_ADDRESS_SET);
+    TFT_SendCommand(TFT_CASET);
     TFT_SendData(0x00);
     TFT_SendData(column);
 }
 
 void TFT_SetRow(uint8_t row){
-    TFT_SendCommand(TFT_ROW_ADDRESS_SET);
+    TFT_SendCommand(TFT_RASET);
     TFT_SendData(0x00);
     TFT_SendData(row);
+}
+
+void TFT_SetRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop){
+    TFT_SendCommand(TFT_RASET);
+    TFT_SendData(0x00);
+    TFT_SendData(Ystart);
+    TFT_SendData(0x00);
+    TFT_SendData(Ystop);
+
+    TFT_SendCommand(TFT_CASET);
+    TFT_SendData(0x00);
+    TFT_SendData(Xstart);
+    TFT_SendData(0x00);
+    TFT_SendData(Xstop);
 }
 
 void TFT_Init(){
@@ -52,25 +67,32 @@ void TFT_Init(){
 void TFT_DrawPixel(uint8_t Y, uint8_t X, uint16_t colour){
     TFT_SetRow(Y);
     TFT_SetColumn(X);
-    TFT_SendCommand(TFT_MEMORY_WRITE);
+    TFT_SendCommand(TFT_RAMWR);
     TFT_SendData(colour >> 8);
     TFT_SendData(colour);
 }
 
-void TFT_DrawChar(uint8_t Y, uint8_t X, char c){
-    uint8_t col;
+void TFT_DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB){
+    TFT_SetRect(Y, X, Y + CHAR_HEIGHT - 1, X + CHAR_WIDTH - 1);
+    TFT_SendCommand(TFT_RAMWR);
     for(uint8_t i = 0; i < CHAR_WIDTH; i++){
-        TFT_SetRow(Y + i);
         for(uint8_t j = 0; j < CHAR_HEIGHT; j++){
-            TFT_SetColumn(X + j);
-            TFT_SendCommand(TFT_MEMORY_WRITE);
             if(characters[(uint8_t) c][i] & (0x01 << j)){
-                TFT_SendData(0xFF);
-                TFT_SendData(0xFF);
+                TFT_SendData(colourF >> 8);
+                TFT_SendData(colourF);
             } else{
-                TFT_SendData(0x00);
-                TFT_SendData(0x00);
+                TFT_SendData(colourB >> 8);
+                TFT_SendData(colourB);
             }
         }
+    }
+}
+
+void TFT_DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour){
+    TFT_SetRect(Ystart, Xstart, Ystop, Xstop);
+    TFT_SendCommand(TFT_RAMWR);
+    for(uint16_t i = 0; i < ((Ystop - Ystart) * (Xstop - Xstart)); i++){
+        TFT_SendData(colour >> 8);
+        TFT_SendData(colour);
     }
 }
