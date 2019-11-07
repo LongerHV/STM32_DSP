@@ -1,6 +1,5 @@
 #include "DelayBlock.hpp"
 
-
 DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset){
     this->pData = pData;
     this->max_delay = max_delay;
