@@ -23,14 +23,15 @@ class Display{
     public:
         Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi);
         ~Display();
-        void SendByte(uint8_t data);
-        void Send16bits(uint16_t data);
+        void Send(uint8_t data);
+        void Send(uint8_t *data, uint32_t length);
         void SendCommand(uint8_t cmd);
         void SendData(uint8_t data);
         void SendData(uint8_t *data, uint32_t length);
         void DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
-        void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB);
+        void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB, uint8_t size);
         void DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour);
+        void FillScreen(uint16_t colour);
         void DumpASCII();
 };
 

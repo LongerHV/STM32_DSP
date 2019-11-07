@@ -32,6 +32,7 @@
 /* USER CODE BEGIN Includes */
 // #include "Effect.hpp"
 #include "Delay.hpp"
+#include "Display.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -152,24 +153,14 @@ int main(void)
     // }
 
     // TESTING LCD SPI
-    HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
-    HAL_Delay(20);
-    TFT_SendCommand(0x11);
-    HAL_Delay(20);
-    TFT_SendCommand(TFT_PIXEL_FORMAT);  // 16 bit pixels
-    TFT_SendData(0x05);
-    TFT_SendCommand(0x29);
+    Display *my_disp = new Display(128, 160, &hspi1);
+    my_disp->FillScreen(0x0000);
+    my_disp->DumpASCII();
 
     // Initializing effects
     DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
     DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
     Effect *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
-
-    TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0000);
-    char *aaa = delay1->GetName();
-    for(uint8_t i = 0; i < 8; i++){
-      TFT_DrawChar(0, 8 * i, aaa[i], 0xFFFF, 0x0000);
-    }
 
   /* USER CODE END 2 */
 
@@ -179,7 +170,6 @@ int main(void)
     {
         if (block_ready)
         {
-            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET); 
             // Convert data to float
             arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
@@ -190,7 +180,6 @@ int main(void)
             // CODE ENDS HERE
             // Convert data back to 16 bit unsigned integer
             arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
-            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET); 
             block_ready = 0;
         }
     }
