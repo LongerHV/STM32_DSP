@@ -146,8 +146,8 @@ void Display::DrawPixel(uint8_t Y, uint8_t X, uint16_t colour){
     this->SendData(colour);
 }
 
-void Display::DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB, uint8_t size){
-    uint8_t char_size = 8 * size;
+void Display::DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB){
+    uint8_t char_size = CHARSIZE;
     this->SetRect(Y * char_size, X * char_size, (Y + 1) * char_size - 1, (X + 1) * char_size - 1);
     this->SendCommand(RAMWR);
     for(uint8_t i = 0; i < char_size; i++){
@@ -182,7 +182,7 @@ void Display::DumpASCII(){
         for(uint8_t j = 0; j < 16; j++){
             index = i * 16 + j;
             if(index >= 128) return;
-            this->DrawChar(i, j, index, 0xFFFF, 0x0000, 1);
+            this->DrawChar(i, j, index, 0xFFFF, 0x0000);
         }
     }
 }

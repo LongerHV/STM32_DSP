@@ -36,8 +36,6 @@ extern "C" {
 #include "arm_math.h"
 #include "arm_const_structs.h"
 #include <stdlib.h>
-// #include "fx.h"
-#include "tft.h"
 #include "mymath.h"
 /* USER CODE END Includes */
 

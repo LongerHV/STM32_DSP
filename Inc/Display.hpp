@@ -29,7 +29,7 @@ class Display{
         void SendData(uint8_t data);
         void SendData(uint8_t *data, uint32_t length);
         void DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
-        void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB, uint8_t size);
+        void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB);
         void DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour);
         void FillScreen(uint16_t colour);
         void DumpASCII();
