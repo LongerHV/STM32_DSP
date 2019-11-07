@@ -85,7 +85,7 @@ void fx_delaySrereo(FX_DelayStereoTypeDef *delay, float32_t *pDataL, float32_t *
 
 void fx_delayGetTail(FX_DelayTypeDef *delay, q15_t *pDst, uint32_t blockSize){
     uint32_t tail;
-    for(uint32_t i = 0; i < blockSize){
+    for(uint32_t i = 0; i < blockSize; i++){
         if(delay->Offset > delay->Index + i){
             tail = delay->MaxSize - delay->Offset + delay->Index + i;
         } else {
@@ -100,5 +100,6 @@ void fx_delayFeed(FX_DelayTypeDef *delay, q15_t *pSrc, uint32_t blockSize){
         delay->pData[delay->Index] = pSrc[i];
         if(++delay->Index >= delay->MaxSize){
             delay->Index = 0;
+        }
     }
 }

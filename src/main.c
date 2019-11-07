@@ -56,8 +56,8 @@ uint8_t block_ready = 0;
 uint16_t buffer[6][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[24000];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[24000];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
 // uint32_t __attribute__((section(".sdram"))) sdram_test[24000];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
@@ -138,10 +138,20 @@ int main(void)
     // Initializing effects
     FX_DelayTypeDef fxdelay1;
     // fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 1.0, 0.7, delay_buffer1);
-    fx_delay_init(&fxdelay1, 24000, 20000, delay_buffer1);
+    fx_delay_init(&fxdelay1, 48000, 40000, delay_buffer1);
     FX_DelayTypeDef fxdelay2;
     // fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
-    fx_delay_init(&fxdelay2, 24000, 15000, delay_buffer1);
+    fx_delay_init(&fxdelay2, 48000, 35000, delay_buffer1);
+    FX_DelayStereoTypeDef fxdelayStereo;
+    fxdelayStereo.delayLeft = &fxdelay1;
+    fxdelayStereo.delayRight = &fxdelay2;
+    fxdelayStereo.DryLevel = 1.0;
+    fxdelayStereo.WetLevel = 0.8;
+    fxdelayStereo.Feedback = 0.6;
+
+    // Fill delay buffers with 0
+    arm_fill_q15(0, delay_buffer1, 48000);
+    arm_fill_q15(0, delay_buffer2, 48000);
 
     // // TESTING FMC
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
@@ -206,6 +216,7 @@ int main(void)
             fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
 
+            fx_delaySrereo(&fxdelayStereo, data[0], data[1], BLOCK_SIZE);
             // fx_delay(&fxdelay1, data[0], BLOCK_SIZE);
             // fx_delay(&fxdelay2, data[1], BLOCK_SIZE);
 
