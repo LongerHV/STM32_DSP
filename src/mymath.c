@@ -8,12 +8,6 @@ float32_t arm_sin2(float32_t x){
     return pow(arm_sin_f32(x), 2);
 }
 
-void arm_mat_scalar_mul_f32(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize){
-    for(uint32_t i = 0; i < blockSize; i++){
-        pDst[i] = pSrc[i] * scalar;
-    }
-}
-
 void arm_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize){
     for(uint32_t i = 0; i < blockSize; i++)
         pSrc[i] ^= (uint16_t)1 << 15;
