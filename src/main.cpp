@@ -30,6 +30,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "Effect.hpp"
+#include "Delay.hpp"
 
 /* USER CODE END Includes */
 
