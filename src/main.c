@@ -56,8 +56,8 @@ uint8_t block_ready = 0;
 uint16_t buffer[6][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
-float32_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[24000];
-float32_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[24000];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[24000];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[24000];
 // uint32_t __attribute__((section(".sdram"))) sdram_test[24000];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
@@ -137,9 +137,11 @@ int main(void)
 
     // Initializing effects
     FX_DelayTypeDef fxdelay1;
-    fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 1.0, 0.7, delay_buffer1);
+    // fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 1.0, 0.7, delay_buffer1);
+    fx_delay_init(&fxdelay1, 24000, 20000, delay_buffer1);
     FX_DelayTypeDef fxdelay2;
-    fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
+    // fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
+    fx_delay_init(&fxdelay2, 24000, 15000, delay_buffer1);
 
     // // TESTING FMC
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
@@ -171,13 +173,24 @@ int main(void)
     //   }
     // }
 
-    TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0008);
+    // Fill screen with black colour
+    TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0000);
 
-    uint8_t index;
-    for(uint16_t i = 0; i < 20; i++){
-      for(uint16_t j = 0; j < 16; j++){
-        index = i * 16 + j;
-        TFT_DrawChar(8 * i, 8 * j, index, 0xFFFF, 0x0000);
+    // Fill screen with ASCII characters
+    // uint8_t index;
+    // for(uint16_t i = 0; i < 20; i++){
+    //   for(uint16_t j = 0; j < 16; j++){
+    //     index = i * 16 + j;
+    //     TFT_DrawChar(8 * i, 8 * j, index, 0xFFFF, 0x0000);
+    //   }
+    // }
+
+    // Fill screen with text from 'string'
+    char text[] = "Daniel to siurek";
+
+    for(uint8_t j = 0; j < 20; j++){
+      for(uint8_t i = 0; i < 16; i++){
+        TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
       }
     }
 
@@ -193,8 +206,8 @@ int main(void)
             fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
 
-            fx_delay(&fxdelay1, data[0], BLOCK_SIZE);
-            fx_delay(&fxdelay2, data[1], BLOCK_SIZE);
+            // fx_delay(&fxdelay1, data[0], BLOCK_SIZE);
+            // fx_delay(&fxdelay2, data[1], BLOCK_SIZE);
 
             // CODE ENDS HERE
             // Convert data back to 16 bit unsigned integer

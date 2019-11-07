@@ -21,37 +21,84 @@ void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize){
         pDst[i] ^= (uint16_t)1 << 15;
 }
 
-void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData){
+void fx_float_scalar_mul(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize){
+    for(uint32_t i = 0; i < blockSize; i++){
+        pDst[i] = pSrc[i] * scalar;
+    }
+}
+
+// void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData){
+void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, q15_t *pData){
     delay->pData = pData;
     delay->MaxSize = size;
     delay->Offset = offset;
     delay->Index = 0;
-    delay->Feedback = feedback;
-    delay->DryLevel = dry;
-    delay->WetLevel = wet;
+    // delay->Feedback = feedback;
+    // delay->DryLevel = dry;
+    // delay->WetLevel = wet;
 }
 
-void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, uint32_t blockSize){
+void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, float32_t *pDst, uint32_t blockSize){
+
+}
+
+void fx_delayChannel(FX_DelayTypeDef *delay, float32_t *pData, float32_t dry, float32_t wet, float32_t fb, uint32_t blockSize){
+    float32_t *tailFloat = (float32_t *) malloc(blockSize * sizeof(float32_t));
+    float32_t *feedback = (float32_t *) malloc(blockSize * sizeof(float32_t));
+    q15_t *tempFixed = (q15_t *) malloc(blockSize * sizeof(q15_t));
+
+    // Get tail blocks
+    fx_delayGetTail(delay, tempFixed, blockSize);
+
+    // Convert tail blocks from fixed to floating point format
+    arm_q15_to_float(tempFixed, tailFloat, blockSize);
+
+    // Prepare feedback block
+    fx_float_scalar_mul(tailFloat, feedback, fb, blockSize);
+
+    arm_add_f32(pData, feedback, feedback, blockSize);
+
+    // Convert feedback block to fixed point
+    arm_float_to_q15(feedback, tempFixed, blockSize);
+
+    // Feed delay block
+    fx_delayFeed(delay, tempFixed, blockSize);
+
+    // Dry gain
+    fx_float_scalar_mul(pData, pData, dry, blockSize);
+
+    // Wet gain
+    fx_float_scalar_mul(tailFloat, tailFloat, wet, blockSize);
+
+    // Add Wet and Dry signals
+    arm_add_f32(pData, tailFloat, pData, blockSize);
+
+    free(tailFloat);
+    free(feedback);
+    free(tempFixed);
+}
+
+void fx_delaySrereo(FX_DelayStereoTypeDef *delay, float32_t *pDataL, float32_t *pDataR, uint32_t blockSize){
+    fx_delayChannel(delay->delayLeft, pDataL, delay->DryLevel, delay->WetLevel, delay->WetLevel, blockSize);
+    fx_delayChannel(delay->delayRight, pDataR, delay->DryLevel, delay->WetLevel, delay->WetLevel, blockSize);
+}
+
+void fx_delayGetTail(FX_DelayTypeDef *delay, q15_t *pDst, uint32_t blockSize){
     uint32_t tail;
-    for(uint16_t i = 0; i < blockSize; i++){
-        // Calculate index of delay tail
-        if(delay->Offset > delay->Index){
-            tail = delay->MaxSize - delay->Offset + delay->Index;
+    for(uint32_t i = 0; i < blockSize){
+        if(delay->Offset > delay->Index + i){
+            tail = delay->MaxSize - delay->Offset + delay->Index + i;
         } else {
-            tail = delay->Index - delay->Offset;
+            tail = delay->Index - delay->Offset + i;
         }
-
-        // Calculate value for delay input sample
-        delay->pData[delay->Index] = pSrc[i] + (delay->Feedback * delay->pData[delay->Index]);
-
-        // Calculate value for output sample
-        pSrc[i] = (delay->DryLevel * pSrc[i]) + (delay->WetLevel * delay->pData[tail]);
-
-        // Increment delay counter
-        if(++delay->Index >= delay->MaxSize){
-            delay->Index = 0;
-        }
+        pDst[i] = delay->pData[tail];
     }
 }
 
-
+void fx_delayFeed(FX_DelayTypeDef *delay, q15_t *pSrc, uint32_t blockSize){
+    for(uint32_t i = 0; i < blockSize; i++){
+        delay->pData[delay->Index] = pSrc[i];
+        if(++delay->Index >= delay->MaxSize){
+            delay->Index = 0;
+    }
+}
