@@ -16,6 +16,7 @@ class DelayBlock{
         DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset);
         void GetTailBlock(q15_t *pDst, uint32_t block_size);
         void Feed(q15_t *pSrc, uint32_t block_size);
+        void ResetBuffer();
 
 };
 

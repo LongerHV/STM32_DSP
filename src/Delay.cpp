@@ -14,9 +14,9 @@ Delay::~Delay(){
 }
 
 void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){
-    float32_t *temp_float = (float32_t *) malloc(block_size * sizeof(float32_t));
-    float32_t *feedback_block = (float32_t *) malloc(block_size * sizeof(float32_t));
-    q15_t *temp_fixed = (q15_t *) malloc(block_size * sizeof(q15_t));
+    float32_t *temp_float = new float32_t[block_size];
+    float32_t *feedback_block = new float32_t[block_size];
+    q15_t *temp_fixed = new q15_t[block_size];
     float32_t *pData;
     DelayBlock *channel;
     for(uint8_t i = 0; i < 2; i++){
@@ -47,7 +47,7 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
         // Add Wet and Dry signals
         arm_add_f32(pData, temp_float, pData, block_size);
     }
-    free(temp_float);
-    free(temp_fixed);
-    free(feedback_block);
+    delete [] temp_float;
+    delete [] temp_fixed;
+    delete [] feedback_block;
 }

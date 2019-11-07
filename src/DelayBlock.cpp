@@ -6,6 +6,7 @@ DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset){
     this->max_delay = max_delay;
     this->offset = offset;
     this->current = 0;
+    this->ResetBuffer();
 }
 
 void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size){
@@ -27,4 +28,8 @@ void DelayBlock::Feed(q15_t *pSrc, uint32_t block_size){
             this->current = 0;
         }
     }
+}
+
+void DelayBlock::ResetBuffer(){
+    arm_fill_q15(0, this->pData, this->max_delay);
 }

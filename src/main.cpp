@@ -171,10 +171,6 @@ int main(void)
       TFT_DrawChar(0, 8 * i, aaa[i], 0xFFFF, 0x0000);
     }
 
-    // Fill delay buffers with 0
-    arm_fill_q15(0, delay_buffer1, 48000);
-    arm_fill_q15(0, delay_buffer2, 48000);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
