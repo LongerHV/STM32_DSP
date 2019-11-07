@@ -163,7 +163,7 @@ int main(void)
     // Initializing effects
     DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
     DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
-    Delay *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
+    Effect *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
 
     TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0000);
     char *aaa = delay1->GetName();

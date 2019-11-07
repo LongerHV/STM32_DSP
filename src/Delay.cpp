@@ -1,6 +1,6 @@
 #include "Delay.hpp"
 
-Delay::Delay(char name[9], DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
+Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
     this->SetName(name);
     this->delay_left = delay_left;
     this->delay_right = delay_right;

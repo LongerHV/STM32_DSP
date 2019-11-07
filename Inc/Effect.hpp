@@ -13,7 +13,7 @@ class Effect{
         ~Effect();
         virtual void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size)=0;
         char *GetName();
-        void SetName(char name[9]);
+        void SetName(const char *name);
 
 };
 
