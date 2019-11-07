@@ -96,3 +96,14 @@ void TFT_DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, 
         TFT_SendData(colour);
     }
 }
+
+void TFT_DumpASCII(){
+    uint8_t index;
+    for(uint16_t i = 0; i < 20; i++){
+      for(uint16_t j = 0; j < 16; j++){
+        if(i * 16 + j >= 128) return;
+        index = i * 16 + j;
+        TFT_DrawChar(8 * i, 8 * j, index, 0xFFFF, 0x0000);
+      }
+    }
+}

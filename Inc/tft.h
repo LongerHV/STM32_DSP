@@ -36,6 +36,7 @@ void TFT_Init();
 void TFT_DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
 void TFT_DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB);
 void TFT_DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour);
+void TFT_DumpASCII();
 
 #ifdef __cplusplus
 }

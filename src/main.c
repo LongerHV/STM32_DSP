@@ -137,10 +137,8 @@ int main(void)
 
     // Initializing effects
     FX_DelayTypeDef fxdelay1;
-    // fx_delay_init(&fxdelay1, 24000, 20000, 0.8, 1.0, 0.7, delay_buffer1);
     fx_delay_init(&fxdelay1, 48000, 40000, delay_buffer1);
     FX_DelayTypeDef fxdelay2;
-    // fx_delay_init(&fxdelay2, 24000, 15000, 0.8, 1.0, 0.7, delay_buffer1);
     fx_delay_init(&fxdelay2, 48000, 35000, delay_buffer1);
     FX_DelayStereoTypeDef fxdelayStereo;
     fxdelayStereo.delayLeft = &fxdelay1;
@@ -176,32 +174,19 @@ int main(void)
     TFT_SendData(0x05);
     TFT_SendCommand(0x29);
 
-    // TFT_TEST
-    // for(uint16_t i = 0; i < 160; i++){
-    //   for(uint16_t j = 0; j < 128; j++){
-    //     TFT_DrawPixel((uint8_t) i, (uint8_t) j, 0x0010);
-    //   }
-    // }
-
     // Fill screen with black colour
     TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0000);
 
     // Fill screen with ASCII characters
-    // uint8_t index;
-    // for(uint16_t i = 0; i < 20; i++){
-    //   for(uint16_t j = 0; j < 16; j++){
-    //     index = i * 16 + j;
-    //     TFT_DrawChar(8 * i, 8 * j, index, 0xFFFF, 0x0000);
-    //   }
-    // }
+    TFT_DumpASCII();
 
     // Fill screen with text from 'string'
-    char text[] = "Daniel to siurek";
-      for(uint8_t j = 0; j < 20; j++){
-        for(uint8_t i = 0; i < 16; i++){
-          TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
-        }
-      }
+    // char text[] = "Daniel to siurek";
+    //   for(uint8_t j = 0; j < 20; j++){
+    //     for(uint8_t i = 0; i < 16; i++){
+    //       TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
+    //     }
+    //   }
 
   /* USER CODE END 2 */
 
