@@ -197,12 +197,11 @@ int main(void)
 
     // Fill screen with text from 'string'
     char text[] = "Daniel to siurek";
-
-    for(uint8_t j = 0; j < 20; j++){
-      for(uint8_t i = 0; i < 16; i++){
-        TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
+      for(uint8_t j = 0; j < 20; j++){
+        for(uint8_t i = 0; i < 16; i++){
+          TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
+        }
       }
-    }
 
   /* USER CODE END 2 */
 
@@ -212,17 +211,17 @@ int main(void)
     {
         if (block_ready)
         {
+            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET); 
             // Convert data to float
             fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
 
             fx_delaySrereo(&fxdelayStereo, data[0], data[1], BLOCK_SIZE);
-            // fx_delay(&fxdelay1, data[0], BLOCK_SIZE);
-            // fx_delay(&fxdelay2, data[1], BLOCK_SIZE);
 
             // CODE ENDS HERE
             // Convert data back to 16 bit unsigned integer
             fx_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
+            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET); 
             block_ready = 0;
         }
     }
