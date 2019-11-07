@@ -9,6 +9,12 @@ float32_t math_sin2(float32_t x){
     return pow(arm_sin_f32(x), 2);
 }
 
+void fx_float_scalar_mul(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize){
+    for(uint32_t i = 0; i < blockSize; i++){
+        pDst[i] = pSrc[i] * scalar;
+    }
+}
+
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize){
     for(uint32_t i = 0; i < blockSize; i++)
         pSrc[i] ^= (uint16_t)1 << 15;
@@ -21,21 +27,11 @@ void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize){
         pDst[i] ^= (uint16_t)1 << 15;
 }
 
-void fx_float_scalar_mul(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize){
-    for(uint32_t i = 0; i < blockSize; i++){
-        pDst[i] = pSrc[i] * scalar;
-    }
-}
-
-// void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData){
 void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, q15_t *pData){
     delay->pData = pData;
     delay->MaxSize = size;
     delay->Offset = offset;
     delay->Index = 0;
-    // delay->Feedback = feedback;
-    // delay->DryLevel = dry;
-    // delay->WetLevel = wet;
 }
 
 void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, float32_t *pDst, uint32_t blockSize){
@@ -55,7 +51,6 @@ void fx_delayChannel(FX_DelayTypeDef *delay, float32_t *pData, float32_t dry, fl
 
     // Prepare feedback block
     fx_float_scalar_mul(tailFloat, feedback, fb, blockSize);
-
     arm_add_f32(pData, feedback, feedback, blockSize);
 
     // Convert feedback block to fixed point

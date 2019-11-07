@@ -55,14 +55,13 @@ typedef struct{
 // Math functions
 float32_t math_atg(float32_t x);
 float32_t math_sin2(float32_t x);
+void fx_float_scalar_mul(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize);
 
 // Data conversion
 void fx_uint16_to_float(uint16_t *pSrc, float32_t *pDst, uint32_t blockSize);
 void fx_float_to_uint16(float32_t *pSrc, uint16_t *pDst, uint32_t blockSize);
-void fx_float_scalar_mul(float32_t *pSrc, float32_t *pDst, float32_t scalar, uint32_t blockSize);
 
 // Delay functions
-// void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, float32_t feedback, float32_t dry, float32_t wet, float32_t *pData);
 void fx_delay_init(FX_DelayTypeDef *delay, uint32_t size, uint32_t offset, q15_t *pData);
 void fx_delay(FX_DelayTypeDef *delay, float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
 void fx_delayChannel(FX_DelayTypeDef *delay, float32_t *pData, float32_t dry, float32_t wet, float32_t fb, uint32_t BlockSize);
