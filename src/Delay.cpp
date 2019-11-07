@@ -1,11 +1,16 @@
 #include "Delay.hpp"
 
-Delay::Delay(DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
+Delay::Delay(char name[9], DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
+    this->SetName(name);
     this->delay_left = delay_left;
     this->delay_right = delay_right;
     this->feedback = feedback;
     this->dry_level = dry_level;
     this->wet_level = wet_level;
+}
+
+Delay::~Delay(){
+
 }
 
 void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){

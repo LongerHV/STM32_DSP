@@ -6,12 +6,14 @@
 
 class Effect{
     private:
-        char name[8];
+        char name[9];
 
     public:
         Effect();
-        virtual void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
+        ~Effect();
+        virtual void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size)=0;
         char *GetName();
+        void SetName(char name[9]);
 
 };
 

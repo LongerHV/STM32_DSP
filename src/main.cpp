@@ -136,14 +136,6 @@ int main(void)
     if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK)
         return 0;
 
-    // Initializing effects
-    DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
-    DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
-    Delay *delay1 = new Delay(left_delay, right_delay, 0.6, 1.0, 0.8);
-
-    // Fill delay buffers with 0
-    arm_fill_q15(0, delay_buffer1, 48000);
-    arm_fill_q15(0, delay_buffer2, 48000);
 
     // // TESTING FMC
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
@@ -168,19 +160,20 @@ int main(void)
     TFT_SendData(0x05);
     TFT_SendCommand(0x29);
 
-    // Fill screen with black colour
+    // Initializing effects
+    DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
+    DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
+    Delay *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
+
     TFT_DrawRect(0x00, 0x00, 0xA0, 0x80, 0x0000);
+    char *aaa = delay1->GetName();
+    for(uint8_t i = 0; i < 8; i++){
+      TFT_DrawChar(0, 8 * i, aaa[i], 0xFFFF, 0x0000);
+    }
 
-    // Fill screen with ASCII characters
-    TFT_DumpASCII();
-
-    // Fill screen with text from 'string'
-    // char text[] = "Daniel to siurek";
-    //   for(uint8_t j = 0; j < 20; j++){
-    //     for(uint8_t i = 0; i < 16; i++){
-    //       TFT_DrawChar(8 * j, 8 * i, text[i], 0xFFFF, 0x0000);
-    //     }
-    //   }
+    // Fill delay buffers with 0
+    arm_fill_q15(0, delay_buffer1, 48000);
+    arm_fill_q15(0, delay_buffer2, 48000);
 
   /* USER CODE END 2 */
 
