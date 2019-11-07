@@ -1,19 +1,28 @@
 #include "Delay.hpp"
 
-Delay::Delay(float32_t feedback, float32_t dry_level, float32_t wet_level){
+Delay::Delay(DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
+    this->delay_left = delay_left;
+    this->delay_right = delay_right;
     this->feedback = feedback;
     this->dry_level = dry_level;
     this->wet_level = wet_level;
 }
 
-void Delay::ProcessBlock(float32_t *pData, uint32_t block_size){
+void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){
     float32_t *temp_float = (float32_t *) malloc(block_size * sizeof(float32_t));
     float32_t *feedback_block = (float32_t *) malloc(block_size * sizeof(float32_t));
     q15_t *temp_fixed = (q15_t *) malloc(block_size * sizeof(q15_t));
+    float32_t *pData;
     DelayBlock *channel;
     for(uint8_t i = 0; i < 2; i++){
-        if(i == 0) channel = &this->delay_left;
-        else channel = &this->delay_right;
+        if(i == 0){
+            channel = this->delay_left;
+            pData = pData_left;
+        } 
+        else{
+            channel = this->delay_right;
+            pData = pData_right;
+        } 
 
         // Get tail blocks
         channel->GetTailBlock(temp_fixed, block_size);

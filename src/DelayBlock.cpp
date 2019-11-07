@@ -1,7 +1,11 @@
 #include "DelayBlock.hpp"
 
-DelayBlock::DelayBlock(){
 
+DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset){
+    this->pData = pData;
+    this->max_delay = max_delay;
+    this->offset = offset;
+    this->current = 0;
 }
 
 void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size){
@@ -10,7 +14,7 @@ void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size){
         if(this->offset > this->current + i){
             tail_index = this->max_delay - this->offset + this->current + i;
         } else {
-            tail = this->current - this->offset + i;
+            tail_index = this->current - this->offset + i;
         }
         pDst[i] = this->pData[tail_index];
     }

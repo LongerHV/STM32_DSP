@@ -30,9 +30,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Effect.hpp"
+// #include "Effect.hpp"
 #include "Delay.hpp"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -138,16 +137,9 @@ int main(void)
         return 0;
 
     // Initializing effects
-    FX_DelayTypeDef fxdelay1;
-    fx_delay_init(&fxdelay1, 48000, 40000, delay_buffer1);
-    FX_DelayTypeDef fxdelay2;
-    fx_delay_init(&fxdelay2, 48000, 35000, delay_buffer1);
-    FX_DelayStereoTypeDef fxdelayStereo;
-    fxdelayStereo.delayLeft = &fxdelay1;
-    fxdelayStereo.delayRight = &fxdelay2;
-    fxdelayStereo.DryLevel = 1.0;
-    fxdelayStereo.WetLevel = 0.8;
-    fxdelayStereo.Feedback = 0.6;
+    DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
+    DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
+    Delay *delay1 = new Delay(left_delay, right_delay, 0.6, 1.0, 0.8);
 
     // Fill delay buffers with 0
     arm_fill_q15(0, delay_buffer1, 48000);
@@ -200,14 +192,15 @@ int main(void)
         {
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET); 
             // Convert data to float
-            fx_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
+            arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
 
-            fx_delaySrereo(&fxdelayStereo, data[0], data[1], BLOCK_SIZE);
+            // fx_delaySrereo(&fxdelayStereo, data[0], data[1], BLOCK_SIZE);
+            delay1->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
             // CODE ENDS HERE
             // Convert data back to 16 bit unsigned integer
-            fx_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
+            arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET); 
             block_ready = 0;
         }
