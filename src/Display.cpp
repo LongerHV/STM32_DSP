@@ -173,7 +173,7 @@ void Display::DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xs
 }
 
 void Display::FillScreen(uint16_t colour){
-    this->DrawRect(0x0000, 0x0000, this->height - 1, this-> width - 1, colour);
+    this->DrawRect(0x00, 0x00, this->height - 1, this-> width - 1, colour);
 }
 
 void Display::DumpASCII(){
