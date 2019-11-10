@@ -85,29 +85,23 @@ void Display::DC_RESET(){
     HAL_GPIO_WritePin(SPI1_DC_GPIO_Port, SPI1_DC_Pin, GPIO_PIN_RESET);
 }
 
-void Display::SetRow(uint8_t row){
+void Display::SetRow(uint16_t row){
     this->SendCommand(CASET);
-    this->SendData((uint8_t) 0x00);
     this->SendData(row);
 }
 
-void Display::SetCol(uint8_t col){
+void Display::SetCol(uint16_t col){
     this->SendCommand(RASET);
-    this->SendData((uint8_t) 0x00);
     this->SendData(col);
 }
 
-void Display::SetRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop){
+void Display::SetRect(uint16_t Ystart, uint16_t Xstart, uint16_t Ystop, uint16_t Xstop){
     this->SendCommand(RASET);
-    this->SendData((uint8_t) 0x00);
     this->SendData(Ystart);
-    this->SendData((uint8_t) 0x00);
     this->SendData(Ystop);
 
     this->SendCommand(CASET);
-    this->SendData((uint8_t) 0x00);
     this->SendData(Xstart);
-    this->SendData((uint8_t) 0x00);
     this->SendData(Xstop);
 }
 
@@ -148,7 +142,6 @@ void Display::DrawPixel(uint8_t Y, uint8_t X, uint16_t colour){
     this->SetRow(Y);
     this->SetCol(X);
     this->SendCommand(RAMWR);
-    // this->SendData(colour >> 8);
     this->SendData(colour);
 }
 
@@ -159,10 +152,8 @@ void Display::DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t 
     for(uint8_t i = 0; i < char_size; i++){
         for(uint8_t j = 0; j < char_size; j++){
             if(characters[(uint8_t) c][i] & (0x01 << j)){
-                // this->SendData(colourF >> 8);
                 this->SendData(colourF);
             } else{
-                // this->SendData(colourB >> 8);
                 this->SendData(colourB);
             }
         }
@@ -173,7 +164,6 @@ void Display::DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xs
     this->SetRect(Ystart, Xstart, Ystop - 1 , Xstop - 1);
     this->SendCommand(RAMWR);
     for(uint16_t i = 0; i < ((Ystop - Ystart) * (Xstop - Xstart)); i++){
-        // this->SendData(colour >> 8);
         this->SendData(colour);
     }
 }
