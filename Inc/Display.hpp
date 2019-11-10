@@ -27,6 +27,7 @@ class Display{
         void Send(uint8_t *data, uint32_t length);
         void SendCommand(uint8_t cmd);
         void SendData(uint8_t data);
+        void SendData(uint16_t data);
         void SendData(uint8_t *data, uint32_t length);
         void DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
         void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB);
