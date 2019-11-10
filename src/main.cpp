@@ -142,9 +142,9 @@ int main(void)
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
     // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     // for(uint32_t i = 0; i < 10; i++){
-    //   // sdram_test[i] = Src[i];
-    //   // *(__IO uint32_t *) (0xD0000000 + i) = Src[i];
-    //   HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+    //   sdram_test[i] = Src[i];
+    //   // *(__IO uint32_t *) (pSdram + i) = Src[i];
+    //   // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
     // }
     // uint32_t Dst[10];
     // for(uint32_t i = 0; i < 10; i++){
@@ -154,7 +154,23 @@ int main(void)
 
     // TESTING LCD SPI
     Display *my_disp = new Display(128, 160, &hspi1);
-    my_disp->FillScreen(0x0000);
+    my_disp->FillScreen(BLACK);
+    HAL_Delay(200);
+    my_disp->FillScreen(RED);
+    HAL_Delay(200);
+    my_disp->FillScreen(GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE | GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE | RED);
+    HAL_Delay(200);
+    my_disp->FillScreen(RED | GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLACK);
+    HAL_Delay(200);
+
     my_disp->DumpASCII();
 
     // Initializing effects

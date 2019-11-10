@@ -5,6 +5,13 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_spi.h"
 
+// Colours Definitions
+#define RED     ((uint16_t) 0xF800)
+#define GREEN   ((uint16_t) 0x07E0)
+#define BLUE    ((uint16_t) 0x001F)
+#define BLACK   ((uint16_t) 0x0000)
+#define WHITE   ((uint16_t) 0xFFFF)
+
 class Display{
     private:
         uint8_t width;
