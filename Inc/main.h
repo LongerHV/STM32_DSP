@@ -41,7 +41,14 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern uint8_t block_counter;
+extern uint8_t block_ready;
+extern uint16_t* input_buffer;
+extern uint16_t* hidden_buffer;
+extern uint16_t* output_buffer;
+extern uint16_t* temp_buffer;
+extern uint32_t input_sample[2];
+// extern Display *pDisp;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -98,13 +105,6 @@ void Error_Handler(void);
 #define ADC_RESOLUTION 16
 #define MAGIC_DIVISOR ((float32_t)1/(pow(2,ADC_RESOLUTION)))
 
-extern uint8_t block_counter;
-extern uint8_t block_ready;
-extern uint16_t* input_buffer;
-extern uint16_t* hidden_buffer;
-extern uint16_t* output_buffer;
-extern uint16_t* temp_buffer;
-extern uint32_t input_sample[2];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

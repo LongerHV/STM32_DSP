@@ -17,6 +17,8 @@ class Display{
         uint8_t width;
         uint8_t height;
 
+        uint8_t *pBuffer;
+
         SPI_HandleTypeDef *hspi;
 
         void CS_SET();
@@ -32,15 +34,18 @@ class Display{
         void SendData(uint8_t data);
         void SendData(uint16_t data);
         void SendData(uint8_t *data, uint32_t length);
+        void SendDataDMA(uint8_t *data, uint32_t length);
+        // friend void HAL_DMA_FULL_TRANSFER();
 
     public:
-        Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi);
+        Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi, uint8_t *buffer);
         ~Display();
         void DrawPixel(uint8_t Y, uint8_t X, uint16_t colour);
         void DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t colourB);
         void DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour);
         void FillScreen(uint16_t colour);
         void DumpASCII();
+        void UpdateChar(char character);
 };
 
 #endif

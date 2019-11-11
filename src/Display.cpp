@@ -50,10 +50,11 @@
 
 
 
-Display::Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi){
+Display::Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi, uint8_t *buffer){
     this->width = width;
     this->height = height;
     this->hspi = hspi;
+    this->pBuffer = buffer;
 
     // Init routine
     this->CS_RESET();
@@ -138,6 +139,12 @@ void Display::SendData(uint8_t *data, uint32_t length){
     this->Send(data, length);
 }
 
+void Display::SendDataDMA(uint8_t *data, uint32_t length){
+    this->DC_SET();
+    this->CS_RESET();
+    if(HAL_SPI_Transmit_DMA(this->hspi, this->pBuffer, 128) != HAL_OK) Error_Handler();
+}
+
 void Display::DrawPixel(uint8_t Y, uint8_t X, uint16_t colour){
     this->SetRow(Y);
     this->SetCol(X);
@@ -158,6 +165,25 @@ void Display::DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t 
             }
         }
     }
+}
+
+void Display::UpdateChar(char character){
+    for(uint8_t i = 0; i < 8; i++){
+        for(uint8_t j = 0; j < 16; j++){
+            if(characters[(uint8_t) character][i] & (0x01 << (j / 2))){
+                pBuffer[16 * i + j] = 0xFF;
+                j++;
+                pBuffer[16 * i + j] = 0xFF;
+            } else{
+                pBuffer[16 * i + j] = 0x00;
+                j++;
+                pBuffer[16 * i + j] = 0x00;
+            }
+        }
+    }
+    this->SetRect(0, 0, 7, 7);
+    this->SendCommand(RAMWR);
+    this->SendDataDMA(this->pBuffer, 128);
 }
 
 void Display::DrawRect(uint8_t Ystart, uint8_t Xstart, uint8_t Ystop, uint8_t Xstop, uint16_t colour){

@@ -30,7 +30,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-// #include "Effect.hpp"
 #include "Delay.hpp"
 #include "Display.hpp"
 /* USER CODE END Includes */
@@ -58,6 +57,7 @@ uint8_t block_ready = 0;
 uint16_t buffer[6][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
+uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
 // uint32_t __attribute__((section(".sdram"))) sdram_test[24000];
@@ -153,25 +153,27 @@ int main(void)
     // }
 
     // TESTING LCD SPI
-    Display *my_disp = new Display(128, 160, &hspi1);
+    Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
     my_disp->FillScreen(BLACK);
-    HAL_Delay(200);
-    my_disp->FillScreen(RED);
-    HAL_Delay(200);
-    my_disp->FillScreen(GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE | GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE | RED);
-    HAL_Delay(200);
-    my_disp->FillScreen(RED | GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLACK);
-    HAL_Delay(200);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(RED);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(GREEN);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(BLUE);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(BLUE | GREEN);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(BLUE | RED);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(RED | GREEN);
+    // HAL_Delay(200);
+    // my_disp->FillScreen(BLACK);
+    // HAL_Delay(200);
 
-    my_disp->DumpASCII();
+    // my_disp->DumpASCII();
+
+    my_disp->UpdateChar('A');
 
     // Initializing effects
     DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
