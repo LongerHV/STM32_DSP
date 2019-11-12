@@ -143,8 +143,8 @@ int main(void)
     // uint32_t *pSdram = (uint32_t *) 0xD0000000;
     // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     // for(uint32_t i = 0; i < 10; i++){
-    //   sdram_test[i] = Src[i];
-    //   // *(__IO uint32_t *) (pSdram + i) = Src[i];
+    //   // sdram_test[i] = Src[i];
+    //   *(__IO uint32_t *) (pSdram + i) = Src[i];
     //   // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
     // }
     // uint32_t Dst[10];
@@ -156,21 +156,21 @@ int main(void)
     // TESTING LCD SPI
     Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
     my_disp->FillScreen(BLACK);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(RED);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(GREEN);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(BLUE);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(BLUE | GREEN);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(BLUE | RED);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(RED | GREEN);
-    // HAL_Delay(200);
-    // my_disp->FillScreen(BLACK);
-    // HAL_Delay(200);
+    HAL_Delay(200);
+    my_disp->FillScreen(RED);
+    HAL_Delay(200);
+    my_disp->FillScreen(GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE | GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLUE | RED);
+    HAL_Delay(200);
+    my_disp->FillScreen(RED | GREEN);
+    HAL_Delay(200);
+    my_disp->FillScreen(BLACK);
+    HAL_Delay(200);
 
     // my_disp->DumpASCII();
 
@@ -270,12 +270,20 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PLL2.PLL2N = 50;
   PeriphClkInitStruct.PLL2.PLL2P = 1;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 3;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_D1HCLK;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+  PeriphClkInitStruct.PLL3.PLL3M = 1;
+  PeriphClkInitStruct.PLL3.PLL3N = 50;
+  PeriphClkInitStruct.PLL3.PLL3P = 8;
+  PeriphClkInitStruct.PLL3.PLL3Q = 2;
+  PeriphClkInitStruct.PLL3.PLL3R = 1;
+  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_3;
+  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
+  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
+  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL3;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
