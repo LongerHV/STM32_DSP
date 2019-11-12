@@ -141,21 +141,21 @@ int main(void)
 
 
     // // TESTING FMC
-    uint32_t *pSdram = (uint32_t *) 0xD0000000;
-    uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    uint8_t Dst[10];
+    // uint32_t *pSdram = (uint32_t *) 0xD0000000;
+    // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    // uint8_t Dst[10];
     // HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
-    for(uint32_t i = 0; i < 10; i++){
-      // *((uint32_t *) (SDRAM_BASE + i)) = Src[i];
-      // sdram_test[i] = Src[i];
-      // *(__IO uint32_t *) (pSdram + i) = Src[i];
-      HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+    // for(uint32_t i = 0; i < 10; i++){
+    //   // *((uint32_t *) (SDRAM_BASE + i)) = Src[i];
+    //   // sdram_test[i] = Src[i];
+    //   // *(__IO uint32_t *) (pSdram + i) = Src[i];
+    //   // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
 
-    }
-    for(uint32_t i = 0; i < 10; i++){
-      // Dst[i] = *(__IO uint32_t *) (0xD0000000 + 4 * i);
-      // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
-    }
+    // }
+    // for(uint32_t i = 0; i < 10; i++){
+    //   // Dst[i] = *(__IO uint32_t *) (0xD0000000 + 4 * i);
+    //   // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
+    // }
 
     // TESTING LCD SPI
     Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
