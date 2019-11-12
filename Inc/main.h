@@ -85,10 +85,6 @@ void Error_Handler(void);
 #define USB_OTG_FS_PWR_EN_GPIO_Port GPIOD
 #define ENODER_BUTTON_Pin GPIO_PIN_11
 #define ENODER_BUTTON_GPIO_Port GPIOD
-#define ENCODER_B_Pin GPIO_PIN_12
-#define ENCODER_B_GPIO_Port GPIOD
-#define ENCODER_A_Pin GPIO_PIN_13
-#define ENCODER_A_GPIO_Port GPIOD
 #define USB_OTG_FS_OVCR_Pin GPIO_PIN_7
 #define USB_OTG_FS_OVCR_GPIO_Port GPIOG
 #define SPI1_DC_Pin GPIO_PIN_8

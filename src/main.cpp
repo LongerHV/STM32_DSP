@@ -118,6 +118,7 @@ int main(void)
   MX_FMC_Init();
   MX_SPI1_Init();
   MX_SPI3_Init();
+  MX_TIM4_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
