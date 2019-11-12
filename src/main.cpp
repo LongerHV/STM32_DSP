@@ -107,6 +107,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -140,18 +141,21 @@ int main(void)
 
 
     // // TESTING FMC
-    // uint32_t *pSdram = (uint32_t *) 0xD0000000;
-    // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    // for(uint32_t i = 0; i < 10; i++){
-    //   // sdram_test[i] = Src[i];
-    //   *(__IO uint32_t *) (pSdram + i) = Src[i];
-    //   // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
-    // }
-    // uint32_t Dst[10];
-    // for(uint32_t i = 0; i < 10; i++){
-    //   // Dst[i] = *(__IO uint32_t *) (0xD0000000 + 4 * i);
-    //   // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
-    // }
+    uint32_t *pSdram = (uint32_t *) 0xD0000000;
+    uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    uint8_t Dst[10];
+    // HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
+    for(uint32_t i = 0; i < 10; i++){
+      // *((uint32_t *) (SDRAM_BASE + i)) = Src[i];
+      // sdram_test[i] = Src[i];
+      // *(__IO uint32_t *) (pSdram + i) = Src[i];
+      HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+
+    }
+    for(uint32_t i = 0; i < 10; i++){
+      // Dst[i] = *(__IO uint32_t *) (0xD0000000 + 4 * i);
+      // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
+    }
 
     // TESTING LCD SPI
     Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
@@ -172,7 +176,7 @@ int main(void)
     my_disp->FillScreen(BLACK);
     HAL_Delay(200);
 
-    // my_disp->DumpASCII();
+    my_disp->DumpASCII();
 
     my_disp->UpdateChar('A');
 
@@ -193,7 +197,6 @@ int main(void)
             arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
             // CODE HERE (modify data)
 
-            // fx_delaySrereo(&fxdelayStereo, data[0], data[1], BLOCK_SIZE);
             delay1->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
             // CODE ENDS HERE
@@ -238,7 +241,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLM = 1;
   RCC_OscInitStruct.PLL.PLLN = 99;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 20;
+  RCC_OscInitStruct.PLL.PLLQ = 15;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
@@ -267,23 +270,15 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI3|RCC_PERIPHCLK_SPI1
                               |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_FMC;
   PeriphClkInitStruct.PLL2.PLL2M = 1;
-  PeriphClkInitStruct.PLL2.PLL2N = 50;
-  PeriphClkInitStruct.PLL2.PLL2P = 1;
+  PeriphClkInitStruct.PLL2.PLL2N = 99;
+  PeriphClkInitStruct.PLL2.PLL2P = 2;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 3;
+  PeriphClkInitStruct.PLL2.PLL2R = 6;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-  PeriphClkInitStruct.PLL3.PLL3M = 1;
-  PeriphClkInitStruct.PLL3.PLL3N = 50;
-  PeriphClkInitStruct.PLL3.PLL3P = 8;
-  PeriphClkInitStruct.PLL3.PLL3Q = 2;
-  PeriphClkInitStruct.PLL3.PLL3R = 1;
-  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_3;
-  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
-  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
   PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL3;
+  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {

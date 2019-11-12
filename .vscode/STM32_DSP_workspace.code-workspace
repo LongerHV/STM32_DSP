@@ -18,7 +18,8 @@
 			"FMC.C": "cpp",
 			"MAIN.C": "cpp",
 			"TFT.C": "cpp",
-			"FX.C": "cpp"
+			"FX.C": "cpp",
+			"MYMATH.C": "cpp"
 		}
 	}
 }
