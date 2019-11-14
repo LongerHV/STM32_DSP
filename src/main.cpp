@@ -144,11 +144,19 @@ int main(void)
   SDRAM_InitSequence(&hsdram1);
 
   // TESTING FMC
-  uint32_t *pSdram = (uint32_t *) 0x70000000;
+  // uint32_t *pSdram = (uint32_t *) 0xD0000000;
+  uint32_t pSdram = 0xD0000800;
   uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
-  HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
+  // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+  for(uint8_t i = 0; i < 10; i++){
+    *(__IO uint8_t *) (pSdram + i) = Src[i];
+  }
+  HAL_Delay(100);
+  // HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
+  for(uint8_t i = 0; i < 10; i++){
+    Dst[i] = *(__IO uint8_t *) (pSdram + i);
+  }
 
   // TESTING LCD SPI
   Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
@@ -171,7 +179,7 @@ int main(void)
 
   my_disp->DumpASCII();
 
-  my_disp->UpdateChar('A');
+  my_disp->UpdateChar((char)Dst[0]);
 
   // Initializing effects
   DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
@@ -266,7 +274,7 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PLL2.PLL2N = 99;
   PeriphClkInitStruct.PLL2.PLL2P = 2;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 6;
+  PeriphClkInitStruct.PLL2.PLL2R = 4;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
