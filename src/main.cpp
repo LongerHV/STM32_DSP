@@ -125,65 +125,58 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-    input_buffer = buffer[0];
-    hidden_buffer = buffer[2];
-    output_buffer = buffer[4];
+  input_buffer = buffer[0];
+  hidden_buffer = buffer[2];
+  output_buffer = buffer[4];
 
-    // Starting peripherials
-    if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK)
-        return 0;
-    if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK)
-        return 0;
-    if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK)
-        return 0;
-    if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK)
-        return 0;
+  // Starting peripherials
+  if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK)
+      return 0;
+  if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK)
+      return 0;
+  if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK)
+      return 0;
+  if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK)
+      return 0;
 
 
-    // // TESTING FMC
-    // uint32_t *pSdram = (uint32_t *) 0xD0000000;
-    // uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    // uint8_t Dst[10];
-    // HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
-    // for(uint32_t i = 0; i < 10; i++){
-    //   // *((uint32_t *) (SDRAM_BASE + i)) = Src[i];
-    //   // sdram_test[i] = Src[i];
-    //   // *(__IO uint32_t *) (pSdram + i) = Src[i];
-    //   // HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+  // SDRAM initialization sequence
+  SDRAM_InitSequence(&hsdram1);
 
-    // }
-    // for(uint32_t i = 0; i < 10; i++){
-    //   // Dst[i] = *(__IO uint32_t *) (0xD0000000 + 4 * i);
-    //   // HAL_SDRAM_Read_32b(&hsdram1, pSdram, Dst, 10);
-    // }
+  // TESTING FMC
+  uint32_t *pSdram = (uint32_t *) 0x70000000;
+  uint8_t Src[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  HAL_SDRAM_Write_8b(&hsdram1, pSdram, Src, 10);
+  HAL_SDRAM_Read_8b(&hsdram1, pSdram, Dst, 10);
 
-    // TESTING LCD SPI
-    Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
-    my_disp->FillScreen(BLACK);
-    HAL_Delay(200);
-    my_disp->FillScreen(RED);
-    HAL_Delay(200);
-    my_disp->FillScreen(GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE | GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLUE | RED);
-    HAL_Delay(200);
-    my_disp->FillScreen(RED | GREEN);
-    HAL_Delay(200);
-    my_disp->FillScreen(BLACK);
-    HAL_Delay(200);
+  // TESTING LCD SPI
+  Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
+  my_disp->FillScreen(BLACK);
+  HAL_Delay(200);
+  my_disp->FillScreen(RED);
+  HAL_Delay(200);
+  my_disp->FillScreen(GREEN);
+  HAL_Delay(200);
+  my_disp->FillScreen(BLUE);
+  HAL_Delay(200);
+  my_disp->FillScreen(BLUE | GREEN);
+  HAL_Delay(200);
+  my_disp->FillScreen(BLUE | RED);
+  HAL_Delay(200);
+  my_disp->FillScreen(RED | GREEN);
+  HAL_Delay(200);
+  my_disp->FillScreen(BLACK);
+  HAL_Delay(200);
 
-    my_disp->DumpASCII();
+  my_disp->DumpASCII();
 
-    my_disp->UpdateChar('A');
+  my_disp->UpdateChar('A');
 
-    // Initializing effects
-    DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
-    DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
-    Effect *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
+  // Initializing effects
+  DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
+  DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
+  Effect *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
 
   /* USER CODE END 2 */
 
