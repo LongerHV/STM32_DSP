@@ -1,7 +1,7 @@
 # STM32_DSP
 
 To do:
-- Use char buffer (8 bytes) and DMA to update screen one character at the time
-- Add 16bit data send function
-- Remap sdram bank 2 to 0x70000000
+- Finish Parameter class
+- Create an UI
+- Use DMA to update characters, implement screen refreshing
 - Implement comb filters, modulations, LFO, Delays mono/stereo
