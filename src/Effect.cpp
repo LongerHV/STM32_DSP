@@ -13,7 +13,8 @@ char *Effect::GetName(){
 }
 
 void Effect::SetName(const char *name){
-    for(uint8_t i = 0; i < 9; i++){
+    uint8_t i = 0;
+    do{
         this->name[i] = name[i];
-    }
+    } while(name[i++] != '\000');
 }

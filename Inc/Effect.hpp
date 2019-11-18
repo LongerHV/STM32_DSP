@@ -3,10 +3,12 @@
 
 #include "arm_math.h"
 #include "mymath.h"
+#include "Parameter.hpp"
 
 class Effect{
     private:
         char name[9];
+        Parameter *parameters[10];
 
     public:
         Effect();

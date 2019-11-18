@@ -1,6 +1,7 @@
 #ifndef PARAMETER_HPP
 #define PARAMETER_HPP
 
+#include "arm_math.h"
 
 class Parameter{
     private:
@@ -9,7 +10,7 @@ class Parameter{
         friend class Effect;
 
     public:
-        Parameter();
+        Parameter(const char *name);
         char* GetName();
         uint8_t GetValue();
         void IncrementValue();
