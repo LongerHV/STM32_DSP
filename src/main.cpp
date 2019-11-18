@@ -141,7 +141,7 @@ int main(void)
 
 
   // SDRAM initialization sequence
-  SDRAM_InitSequence(&hsdram1);
+  // SDRAM_InitSequence(&hsdram1);
 
   // // TESTING FMC
   // // uint32_t *pSdram = (uint32_t *) 0xD0000000;
@@ -177,14 +177,15 @@ int main(void)
   // my_disp->FillScreen(BLACK);
   // HAL_Delay(200);
 
-  my_disp->DumpASCII();
+  // my_disp->DumpASCII();
 
-  my_disp->UpdateChar('A');
+  // my_disp->UpdateChar('A');
 
   // Initializing effects
   DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
   DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
-  Effect *delay1 = new Delay("Delay   ", left_delay, right_delay, 0.6, 1.0, 0.8);
+  Effect *delay1 = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
+  my_disp->PrintString(0, 0, delay1->GetName()); 
 
   /* USER CODE END 2 */
 

@@ -198,6 +198,12 @@ void Display::FillScreen(uint16_t colour){
     this->DrawRect(0x00, 0x00, this->height, this-> width, colour);
 }
 
+void Display::PrintString(uint8_t Y, uint8_t X, char *s){
+    for(uint8_t i = 0; s[i] != '\000'; i++){
+        this->DrawChar(Y, X + i, s[i], WHITE, BLACK);
+    }
+}
+
 void Display::DumpASCII(){
     uint8_t index;
     for(uint8_t i = 0; i < 20; i++){
