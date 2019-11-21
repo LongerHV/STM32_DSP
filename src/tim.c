@@ -202,6 +202,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   }
 }
 
+uint8_t UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max){
+  static uint16_t last_tim_cnt = 0;
+  int tim_diff = htim->Instance->CNT - last_tim_cnt;
+  if(tim_diff >= 4 || tim_diff <= -4){
+    tim_diff /= 4;
+    *var -= (uint8_t)tim_diff;
+    if(*var > max) *var = max;
+    if(*var < min) *var = min;
+    last_tim_cnt = htim->Instance->CNT;
+    return 1;
+  }
+  return 0;
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -42,6 +42,7 @@ void MX_TIM4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+uint8_t UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

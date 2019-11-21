@@ -131,13 +131,15 @@ int main(void)
 
   // Starting peripherials
   if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK)
-      return 0;
+    return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK)
-      return 0;
+    return 0;
   if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_2) != HAL_OK)
-      return 0;
+    return 0;
   if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK)
-      return 0;
+    return 0;
+  if (HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL) != HAL_OK)
+    return 0;
 
 
   // SDRAM initialization sequence
@@ -161,31 +163,15 @@ int main(void)
   // TESTING LCD SPI
   Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
   my_disp->FillScreen(BLACK);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(RED);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(GREEN);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(BLUE);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(BLUE | GREEN);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(BLUE | RED);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(RED | GREEN);
-  // HAL_Delay(200);
-  // my_disp->FillScreen(BLACK);
-  // HAL_Delay(200);
-
-  // my_disp->DumpASCII();
-
-  // my_disp->UpdateChar('A');
 
   // Initializing effects
   DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
   DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
   Effect *delay1 = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
   my_disp->PrintString(0, 0, delay1->GetName()); 
+
+  // Test variable for encoder
+  int8_t cnt = 0;
 
   /* USER CODE END 2 */
 
@@ -195,16 +181,19 @@ int main(void)
     {
         if (block_ready)
         {
-            // Convert data to float
-            arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
-            // CODE HERE (modify data)
+          // Convert data to float
+          arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
+          // CODE HERE (modify data)
 
-            delay1->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+          delay1->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
-            // CODE ENDS HERE
-            // Convert data back to 16 bit unsigned integer
-            arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
-            block_ready = 0;
+          // CODE ENDS HERE
+          // Convert data back to 16 bit unsigned integer
+          arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
+          block_ready = 0;
+
+          if(UpdateEncoder(&htim4, &cnt, 0, 9))
+            my_disp->UpdateChar(cnt + 48);
         }
     }
     /* USER CODE END WHILE */
