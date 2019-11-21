@@ -216,7 +216,7 @@ int main(void)
           arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
           block_ready = 0;
 
-
+          // User Interface update
           if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
             if(UpdateEncoder(&htim4, &cnt_effect, 0, 0)){
 
@@ -238,8 +238,6 @@ int main(void)
               my_disp->PrintString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr());
             }
           }
-          // if(UpdateEncoder(&htim4, &cnt, 0, 9))
-          //   my_disp->UpdateChar(cnt + 48);
         }
     }
     /* USER CODE END WHILE */
