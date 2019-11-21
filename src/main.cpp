@@ -167,8 +167,8 @@ int main(void)
   // Initializing effects
   Effect *effects[10];
   for(uint8_t i = 0; i < 10; i++) effects[i] = NULL;
-  DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
-  DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
+  DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], 48000, 40000);
+  DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], 48000, 35000);
   effects[0] = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
   effects[1] = new Delay("Delay2", left_delay, right_delay, 0.6, 1.0, 0.8);
 
@@ -196,6 +196,7 @@ int main(void)
   float32_t rms_avg_right = 0.0;
   float32_t rms_avg_left2 = 0.0;
   float32_t rms_avg_right2 = 0.0;
+  uint16_t colour;
   uint8_t cnt_rms = 0;
 
   /* USER CODE END 2 */
@@ -207,10 +208,11 @@ int main(void)
         if (block_ready)
         {
           // Convert data to float
-          arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
+          arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
+          arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
-          arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_left);
-          arm_rms_f32(&data[0][1], BLOCK_SIZE, &rms_right);
+          arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_right);
+          arm_rms_f32(&data[1][0], BLOCK_SIZE, &rms_left);
           rms_avg_left += rms_left;
           rms_avg_right += rms_right;
           if(cnt_rms++ >= 100){
@@ -218,25 +220,25 @@ int main(void)
             // rms_avg_right /= 100;
             // rms_avg_left *= 20;
             // rms_avg_right *= 20;
-            if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.98 * rms_avg_left2;
-            if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.98 * rms_avg_right2;
+            if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.95 * rms_avg_left2;
+            if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.95 * rms_avg_right2;
             rms_avg_left2 = rms_avg_left;
             rms_avg_right2 = rms_avg_right;
 
             for(uint8_t i = 0; i < 5; i++){
-
+              colour = i < 3 ? GREEN : (i == 3 ? YELLOW : RED);
               if(rms_avg_left >= 10){
-                my_disp->PushChar(19 - i, 0, 0x0012, GREEN);
+                my_disp->PushChar(19 - i, 0, 0x0012, colour);
                 rms_avg_left -= 10;
               }else{
-                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)(0.9 * rms_avg_left), GREEN);
+                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)(0.9 * rms_avg_left), colour);
                 rms_avg_left = 0.0;
               }
               if(rms_avg_right >= 10){
-                my_disp->PushChar(19 - i, 1, 0x0012, GREEN);
+                my_disp->PushChar(19 - i, 1, 0x0012, colour);
                 rms_avg_right -= 10;
               }else{
-                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)(0.9 * rms_avg_right), GREEN);
+                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)(0.9 * rms_avg_right), colour);
                 rms_avg_right = 0.0;
               }
             }
@@ -247,11 +249,12 @@ int main(void)
           }
           // CODE HERE (modify data)
 
-          effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+          // effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
           // CODE ENDS HERE
           // Convert data back to 16 bit unsigned integer
-          arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
+          arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
+          arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
           block_ready = 0;
 
           // User Interface update
