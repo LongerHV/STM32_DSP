@@ -10,8 +10,8 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, 
     this->parameters[0] = new Parameter("Time left");
     this->parameters[1] = new Parameter("Time right");
     this->parameters[2] = new Parameter("Feedback");
-    this->parameters[3] = new Parameter("Dry");
-    this->parameters[4] = new Parameter("Wet");
+    this->parameters[3] = new Parameter("Dry level");
+    this->parameters[4] = new Parameter("Wet level");
 }
 
 Delay::~Delay(){
