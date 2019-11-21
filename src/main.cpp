@@ -182,8 +182,10 @@ int main(void)
   // Test variable for encoder
   int8_t cnt_effect = 0;
   int8_t cnt_param = 0;
-  uint8_t param_flag = 0;
-  uint8_t val_flag = 1;
+  uint8_t param_flag = 1;
+  uint8_t val_flag = 0;
+  uint8_t button_states = 0;
+  uint8_t button_pressed = 0;
 
   /* USER CODE END 2 */
 
@@ -193,6 +195,16 @@ int main(void)
     {
         if (block_ready)
         {
+          // Button press detection
+          button_states <<= 1;
+          button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
+          button_pressed = button_states == 1;
+          if(button_pressed){
+            val_flag = param_flag;
+            param_flag = !param_flag;
+            button_pressed = 0;
+          }
+
           // Convert data to float
           arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
           // CODE HERE (modify data)
@@ -204,8 +216,20 @@ int main(void)
           arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
           block_ready = 0;
 
-          if(param_flag){
-            if(UpdateEncoder(&htim4, &cnt_param, 0, 5)){
+
+          if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
+            if(UpdateEncoder(&htim4, &cnt_effect, 0, 0)){
+
+            }
+          }else if(param_flag){
+            if(UpdateEncoder(&htim4, &cnt_param, 0, 4)){
+              for(uint8_t i = 0; i < 5; i++){
+                if(i == cnt_param){
+                  my_disp->PrintString(4 + i, 0, ">");
+                }else{
+                  my_disp->PrintString(4 + i, 0, " ");
+                }
+              }
 
             }
           }else if(val_flag){
