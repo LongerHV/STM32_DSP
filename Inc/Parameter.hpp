@@ -6,16 +6,20 @@
 class Parameter{
     private:
         char name[11];
-        uint8_t value;
+        int8_t value;
+        char val_repr[5];
         friend class Effect;
+
 
     public:
         Parameter(const char *name);
         char* GetName();
-        uint8_t GetValue();
+        char *GetValRepr();
+        int8_t GetValue();
+        int8_t *GetValuePtr();
         void IncrementValue();
         void DecrementValue();
-
+        void UpdateValRepr();
 };
 
 
