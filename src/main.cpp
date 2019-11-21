@@ -169,9 +169,16 @@ int main(void)
   DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
   Effect *delay1 = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
   my_disp->PrintString(0, 0, delay1->GetName()); 
-
+  for(uint8_t i = 0; i < 15; i++) delay1->parameters[0]->IncrementValue();
+  for(int8_t i = 0; i < 5; i++){
+    my_disp->PrintString(4 + i, 1, delay1->GetParamName(i));
+    my_disp->PrintString(4 + i, 11, ":");
+    my_disp->PrintString(4 + i, 12, delay1->GetParamValRepr(i));
+  }
   // Test variable for encoder
-  int8_t cnt = 0;
+  int8_t param_cnt = 0;
+  uint8_t param_flag = 0;
+  uint8_t val_flag = 1;
 
   /* USER CODE END 2 */
 
@@ -192,8 +199,18 @@ int main(void)
           arm_float_to_uint16(data[0], &hidden_buffer[0], 2 * BLOCK_SIZE);
           block_ready = 0;
 
-          if(UpdateEncoder(&htim4, &cnt, 0, 9))
-            my_disp->UpdateChar(cnt + 48);
+          if(param_flag){
+            if(UpdateEncoder(&htim4, &param_cnt, 0, 5)){
+
+            }
+          }else if(val_flag){
+            if(UpdateEncoder(&htim4, delay1->parameters[param_cnt]->GetValuePtr(), 0, 100)){
+              delay1->parameters[param_cnt]->UpdateValRepr();
+              my_disp->PrintString(4 + param_cnt, 12, delay1->parameters[param_cnt]->GetValRepr());
+            }
+          }
+          // if(UpdateEncoder(&htim4, &cnt, 0, 9))
+          //   my_disp->UpdateChar(cnt + 48);
         }
     }
     /* USER CODE END WHILE */
