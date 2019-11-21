@@ -165,18 +165,23 @@ int main(void)
   my_disp->FillScreen(BLACK);
 
   // Initializing effects
+  Effect *effects[10];
   DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
   DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
-  Effect *delay1 = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-  my_disp->PrintString(0, 0, delay1->GetName()); 
-  for(uint8_t i = 0; i < 15; i++) delay1->parameters[0]->IncrementValue();
+  effects[0] = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
+  for(uint8_t i = 1; i < 10; i++) effects[i] = NULL;
+
+  // printing UI
+  my_disp->PrintString(0, 0, effects[0]->GetName()); 
   for(int8_t i = 0; i < 5; i++){
-    my_disp->PrintString(4 + i, 1, delay1->GetParamName(i));
+    my_disp->PrintString(4 + i, 1, effects[0]->GetParamName(i));
     my_disp->PrintString(4 + i, 11, ":");
-    my_disp->PrintString(4 + i, 12, delay1->GetParamValRepr(i));
+    my_disp->PrintString(4 + i, 12, effects[0]->GetParamValRepr(i));
   }
+
   // Test variable for encoder
-  int8_t param_cnt = 0;
+  int8_t cnt_effect = 0;
+  int8_t cnt_param = 0;
   uint8_t param_flag = 0;
   uint8_t val_flag = 1;
 
@@ -192,7 +197,7 @@ int main(void)
           arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
           // CODE HERE (modify data)
 
-          delay1->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+          effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
           // CODE ENDS HERE
           // Convert data back to 16 bit unsigned integer
@@ -200,13 +205,13 @@ int main(void)
           block_ready = 0;
 
           if(param_flag){
-            if(UpdateEncoder(&htim4, &param_cnt, 0, 5)){
+            if(UpdateEncoder(&htim4, &cnt_param, 0, 5)){
 
             }
           }else if(val_flag){
-            if(UpdateEncoder(&htim4, delay1->parameters[param_cnt]->GetValuePtr(), 0, 100)){
-              delay1->parameters[param_cnt]->UpdateValRepr();
-              my_disp->PrintString(4 + param_cnt, 12, delay1->parameters[param_cnt]->GetValRepr());
+            if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
+              effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
+              my_disp->PrintString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr());
             }
           }
           // if(UpdateEncoder(&htim4, &cnt, 0, 9))
