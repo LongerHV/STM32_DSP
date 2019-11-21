@@ -195,16 +195,6 @@ int main(void)
     {
         if (block_ready)
         {
-          // Button press detection
-          button_states <<= 1;
-          button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
-          button_pressed = button_states == 1;
-          if(button_pressed){
-            val_flag = param_flag;
-            param_flag = !param_flag;
-            button_pressed = 0;
-          }
-
           // Convert data to float
           arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
           // CODE HERE (modify data)
@@ -217,10 +207,23 @@ int main(void)
           block_ready = 0;
 
           // User Interface update
+
+          // Button press detection
+          button_states <<= 1;
+          button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
+          button_pressed = button_states == 1;
+          if(button_pressed){
+            val_flag = param_flag;
+            param_flag = !param_flag;
+            button_pressed = 0;
+          }
+
+          // Change effect
           if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
             if(UpdateEncoder(&htim4, &cnt_effect, 0, 0)){
 
             }
+          // Change parameter
           }else if(param_flag){
             if(UpdateEncoder(&htim4, &cnt_param, 0, 4)){
               for(uint8_t i = 0; i < 5; i++){
@@ -232,6 +235,7 @@ int main(void)
               }
 
             }
+          // Modify parameter value
           }else if(val_flag){
             if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
               effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
