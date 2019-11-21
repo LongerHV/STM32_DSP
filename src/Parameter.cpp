@@ -1,8 +1,12 @@
 #include "Parameter.hpp"
 
 Parameter::Parameter(const char *name){
-    for(uint8_t i = 0; i < 11; i++){
+    uint8_t i;
+    for(i = 0; name[i] != '\000' && i < 11; i++){
         this->name[i] = name[i];
+    }
+    for(; name[i] < 11; i++){
+        this->name[i] = ' ';
     }
     this->value = 0;
     this->UpdateValRepr();

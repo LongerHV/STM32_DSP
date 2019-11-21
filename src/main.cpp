@@ -189,6 +189,15 @@ int main(void)
   uint8_t button_states = 0;
   uint8_t button_pressed = 0;
 
+  // UV meter
+  float32_t rms_left = 0.0;
+  float32_t rms_right = 0.0;
+  float32_t rms_avg_left = 0.0;
+  float32_t rms_avg_right = 0.0;
+  float32_t rms_avg_left2 = 0.0;
+  float32_t rms_avg_right2 = 0.0;
+  uint8_t cnt_rms = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -199,6 +208,43 @@ int main(void)
         {
           // Convert data to float
           arm_uint16_to_float(&hidden_buffer[0], data[0], 2 * BLOCK_SIZE);
+
+          arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_left);
+          arm_rms_f32(&data[0][1], BLOCK_SIZE, &rms_right);
+          rms_avg_left += rms_left;
+          rms_avg_right += rms_right;
+          if(cnt_rms++ >= 100){
+            // rms_avg_left /= 100;
+            // rms_avg_right /= 100;
+            // rms_avg_left *= 20;
+            // rms_avg_right *= 20;
+            if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.98 * rms_avg_left2;
+            if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.98 * rms_avg_right2;
+            rms_avg_left2 = rms_avg_left;
+            rms_avg_right2 = rms_avg_right;
+
+            for(uint8_t i = 0; i < 5; i++){
+
+              if(rms_avg_left >= 10){
+                my_disp->PushChar(19 - i, 0, 0x0012, GREEN);
+                rms_avg_left -= 10;
+              }else{
+                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)rms_avg_left, GREEN);
+                rms_avg_left = 0.0;
+              }
+              if(rms_avg_right >= 10){
+                my_disp->PushChar(19 - i, 1, 0x0012, GREEN);
+                rms_avg_right -= 10;
+              }else{
+                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)rms_avg_right, GREEN);
+                rms_avg_right = 0.0;
+              }
+            }
+
+            rms_avg_left = 0.0;
+            rms_avg_right = 0.0;
+            cnt_rms = 0;
+          }
           // CODE HERE (modify data)
 
           effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
