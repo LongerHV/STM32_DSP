@@ -11,6 +11,9 @@
 #define BLUE    ((uint16_t) 0x001F)
 #define BLACK   ((uint16_t) 0x0000)
 #define WHITE   ((uint16_t) 0xFFFF)
+#define YELLOW  ((uint16_t) RED | GREEN)
+#define MAGENTA ((uint16_t) RED | BLUE)
+#define CYAN    ((uint16_t) GREEN | BLUE)
 
 
 struct node{
