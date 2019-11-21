@@ -19,7 +19,8 @@
 			"MAIN.C": "cpp",
 			"TFT.C": "cpp",
 			"FX.C": "cpp",
-			"MYMATH.C": "cpp"
+			"MYMATH.C": "cpp",
+			"TIM.C": "cpp"
 		}
 	}
 }

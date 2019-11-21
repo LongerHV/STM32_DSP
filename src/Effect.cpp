@@ -21,8 +21,12 @@ char *Effect::GetParamValRepr(int8_t param_id){
 }
 
 void Effect::SetName(const char *name){
-    uint8_t i = 0;
-    do{
+    uint8_t i;
+    for(i = 0; name[i] != '\000'; i++){
         this->name[i] = name[i];
-    } while(name[i++] != '\000');
+    }
+    for(; i < 8; i++){
+        this->name[i] = ' ';
+    }
+    this->name[8] = '\000';
 }

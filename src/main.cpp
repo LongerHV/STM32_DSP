@@ -166,10 +166,11 @@ int main(void)
 
   // Initializing effects
   Effect *effects[10];
+  for(uint8_t i = 0; i < 10; i++) effects[i] = NULL;
   DelayBlock *left_delay = new DelayBlock(&delay_buffer1[0], 48000, 40000);
   DelayBlock *right_delay = new DelayBlock(&delay_buffer2[0], 48000, 35000);
   effects[0] = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-  for(uint8_t i = 1; i < 10; i++) effects[i] = NULL;
+  effects[1] = new Delay("Delay2", left_delay, right_delay, 0.6, 1.0, 0.8);
 
   // printing UI
   my_disp->PushString(0, 0, effects[0]->GetName(), WHITE);
@@ -222,8 +223,18 @@ int main(void)
 
           // Change effect
           if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
-            if(UpdateEncoder(&htim4, &cnt_effect, 0, 0)){
-
+            if(UpdateEncoder(&htim4, &cnt_effect, 0, 1)){
+              my_disp->PushString(0, 0, effects[cnt_effect]->GetName(), WHITE);
+              for(int8_t i = 0; i < 5; i++){
+                my_disp->PushString(4 + i, 1, effects[cnt_effect]->GetParamName(i), WHITE);
+                my_disp->PushChar(4 + i, 11, ':', WHITE);
+                my_disp->PushString(4 + i, 12, effects[cnt_effect]->GetParamValRepr(i), WHITE);
+              }
+              my_disp->PushChar(4 + cnt_param, 0, ' ', WHITE);
+              my_disp->PushChar(4, 0, '>', WHITE);
+              cnt_param = 0;
+              param_flag = 1;
+              val_flag = 0;
             }
           // Change parameter
           }else if(param_flag){
