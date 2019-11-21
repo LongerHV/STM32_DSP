@@ -170,7 +170,7 @@ int main(void)
   DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], 48000, 40000);
   DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], 48000, 35000);
   effects[0] = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-  effects[1] = new Delay("Delay2", left_delay, right_delay, 0.6, 1.0, 0.8);
+  effects[1] = new Delay("Delay2", left_delay, right_delay, 0.0, 1.0, 0.0);
 
   // printing UI
   my_disp->PushString(0, 0, effects[0]->GetName(), WHITE);
