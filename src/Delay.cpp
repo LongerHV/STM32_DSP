@@ -7,6 +7,11 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, 
     this->feedback = feedback;
     this->dry_level = dry_level;
     this->wet_level = wet_level;
+    this->parameters[0] = new Parameter("Time left");
+    this->parameters[1] = new Parameter("Time right");
+    this->parameters[2] = new Parameter("Feedback");
+    this->parameters[3] = new Parameter("Dry");
+    this->parameters[4] = new Parameter("Wet");
 }
 
 Delay::~Delay(){
