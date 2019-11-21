@@ -12,12 +12,24 @@
 #define BLACK   ((uint16_t) 0x0000)
 #define WHITE   ((uint16_t) 0xFFFF)
 
+
+struct node{
+    uint8_t Y, X;
+    char c;
+    uint16_t colour;
+    node *pNext;
+};
+
 class Display{
     private:
         uint8_t width;
         uint8_t height;
 
         uint8_t *pBuffer;
+
+        // List of characters to print
+        node *pHead;
+        node *pTail;
 
         SPI_HandleTypeDef *hspi;
 
@@ -35,7 +47,6 @@ class Display{
         void SendData(uint16_t data);
         void SendData(uint8_t *data, uint32_t length);
         void SendDataDMA(uint8_t *data, uint32_t length);
-        // friend void HAL_DMA_FULL_TRANSFER();
 
     public:
         Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi, uint8_t *buffer);
@@ -46,7 +57,10 @@ class Display{
         void FillScreen(uint16_t colour);
         void PrintString(uint8_t Y, uint8_t X, const char *s);
         void DumpASCII();
-        void UpdateChar(char character);
+        void UpdateChar(uint8_t Y, uint8_t X, char c, uint16_t colour);
+        void Pop();
+        void PushChar(uint8_t Y, uint8_t X, char c, uint16_t colour);
+        void PushString(uint8_t Y, uint8_t X, const char *s, uint16_t colour);
 };
 
 #endif

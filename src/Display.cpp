@@ -55,6 +55,8 @@ Display::Display(uint8_t width, uint8_t height, SPI_HandleTypeDef *hspi, uint8_t
     this->height = height;
     this->hspi = hspi;
     this->pBuffer = buffer;
+    this->pHead = NULL;
+    this->pTail = NULL;
 
     // Init routine
     this->CS_RESET();
@@ -167,13 +169,13 @@ void Display::DrawChar(uint8_t Y, uint8_t X, char c, uint16_t colourF, uint16_t 
     }
 }
 
-void Display::UpdateChar(char character){
+void Display::UpdateChar(uint8_t Y, uint8_t X, char c, uint16_t colour){
     for(uint8_t i = 0; i < 8; i++){
         for(uint8_t j = 0; j < 16; j++){
-            if(characters[(uint8_t) character][i] & (0x01 << (j / 2))){
-                pBuffer[16 * i + j] = 0xFF;
+            if(characters[(uint8_t) c][i] & (0x01 << (j / 2))){
+                pBuffer[16 * i + j] = colour >> 8;
                 j++;
-                pBuffer[16 * i + j] = 0xFF;
+                pBuffer[16 * i + j] = colour;
             } else{
                 pBuffer[16 * i + j] = 0x00;
                 j++;
@@ -181,7 +183,7 @@ void Display::UpdateChar(char character){
             }
         }
     }
-    this->SetRect(0, 0, 7, 7);
+    this->SetRect(8 * Y, 8 * X, 8 * Y + 7, 8 * X + 7);
     this->SendCommand(RAMWR);
     this->SendDataDMA(this->pBuffer, 128);
 }
@@ -212,5 +214,39 @@ void Display::DumpASCII(){
             if(index >= 128) return;
             this->DrawChar(i, j, index, 0xFFFF, 0x0000);
         }
+    }
+}
+
+void Display::Pop(){
+    if(this->pHead == NULL){
+        return;
+    }else if(this->pHead == this->pTail){
+        this->UpdateChar(this->pHead->Y, this->pHead->X, this->pHead->c, this->pHead->colour);
+        delete pHead;
+        this->pHead = this->pTail = NULL;
+    }else{
+        this->UpdateChar(this->pHead->Y, this->pHead->X, this->pHead->c, this->pHead->colour);
+        node *pTemp = this->pHead;
+        this->pHead = this->pHead->pNext;
+        delete pTemp;
+    }
+}
+
+void Display::PushChar(uint8_t Y, uint8_t X, char c, uint16_t colour){
+    node *pNew = new node{Y, X, c, colour, NULL};
+    if(this->pHead == NULL && this->pTail == NULL){
+        this->pHead = this->pTail = pNew;
+    }else if(this->pHead == this->pTail){
+        this->pHead->pNext = pNew;
+        this->pTail = this->pHead->pNext;
+    }else{
+        this->pTail->pNext = pNew;
+        this->pTail = this->pTail->pNext;
+    }
+}
+
+void Display::PushString(uint8_t Y, uint8_t X, const char *s, uint16_t colour){
+    for(uint8_t i = 0; s[i] != '\000'; i++){
+        this->PushChar(Y, X + i, s[i], colour);
     }
 }

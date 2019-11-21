@@ -172,12 +172,13 @@ int main(void)
   for(uint8_t i = 1; i < 10; i++) effects[i] = NULL;
 
   // printing UI
-  my_disp->PrintString(0, 0, effects[0]->GetName()); 
+  my_disp->PushString(0, 0, effects[0]->GetName(), WHITE);
   for(int8_t i = 0; i < 5; i++){
-    my_disp->PrintString(4 + i, 1, effects[0]->GetParamName(i));
-    my_disp->PrintString(4 + i, 11, ":");
-    my_disp->PrintString(4 + i, 12, effects[0]->GetParamValRepr(i));
+    my_disp->PushString(4 + i, 1, effects[0]->GetParamName(i), WHITE);
+    my_disp->PushChar(4 + i, 11, ':', WHITE);
+    my_disp->PushString(4 + i, 12, effects[0]->GetParamValRepr(i), WHITE);
   }
+  my_disp->PushChar(4, 0, '>', WHITE);
 
   // Test variable for encoder
   int8_t cnt_effect = 0;
@@ -207,6 +208,7 @@ int main(void)
           block_ready = 0;
 
           // User Interface update
+          my_disp->Pop();
 
           // Button press detection
           button_states <<= 1;
@@ -228,9 +230,9 @@ int main(void)
             if(UpdateEncoder(&htim4, &cnt_param, 0, 4)){
               for(uint8_t i = 0; i < 5; i++){
                 if(i == cnt_param){
-                  my_disp->PrintString(4 + i, 0, ">");
+                  my_disp->PushChar(4 + i, 0, '>', WHITE);
                 }else{
-                  my_disp->PrintString(4 + i, 0, " ");
+                  my_disp->PushChar(4 + i, 0, ' ', WHITE);
                 }
               }
 
@@ -239,7 +241,7 @@ int main(void)
           }else if(val_flag){
             if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
               effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
-              my_disp->PrintString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr());
+              my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), WHITE);
             }
           }
         }
