@@ -216,6 +216,17 @@ int main(void)
           button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
           button_pressed = button_states == 1;
           if(button_pressed){
+            uint16_t colour;
+            if(param_flag){
+              colour = GREEN; 
+            }else{
+              colour = WHITE;
+            }
+            my_disp->PushChar(4 + cnt_param, 0, '>', colour);
+            my_disp->PushString(4 + cnt_param, 1, effects[cnt_effect]->parameters[cnt_param]->GetName(), colour);
+            my_disp->PushChar(4 + cnt_param, 11, ':', colour);
+            my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), colour);
+
             val_flag = param_flag;
             param_flag = !param_flag;
             button_pressed = 0;
@@ -252,7 +263,7 @@ int main(void)
           }else if(val_flag){
             if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
               effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
-              my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), WHITE);
+              my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), GREEN);
             }
           }
         }
