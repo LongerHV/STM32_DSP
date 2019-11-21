@@ -211,15 +211,12 @@ int main(void)
           arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
           arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
+          // UV meter stuff
           arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_right);
           arm_rms_f32(&data[1][0], BLOCK_SIZE, &rms_left);
           rms_avg_left += rms_left;
           rms_avg_right += rms_right;
           if(cnt_rms++ >= 100){
-            // rms_avg_left /= 100;
-            // rms_avg_right /= 100;
-            // rms_avg_left *= 20;
-            // rms_avg_right *= 20;
             if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.95 * rms_avg_left2;
             if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.95 * rms_avg_right2;
             rms_avg_left2 = rms_avg_left;
@@ -247,9 +244,10 @@ int main(void)
             rms_avg_right = 0.0;
             cnt_rms = 0;
           }
+
           // CODE HERE (modify data)
 
-          // effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+          effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
           // CODE ENDS HERE
           // Convert data back to 16 bit unsigned integer
