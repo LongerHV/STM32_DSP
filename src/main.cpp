@@ -229,14 +229,14 @@ int main(void)
                 my_disp->PushChar(19 - i, 0, 0x0012, GREEN);
                 rms_avg_left -= 10;
               }else{
-                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)rms_avg_left, GREEN);
+                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)(0.9 * rms_avg_left), GREEN);
                 rms_avg_left = 0.0;
               }
               if(rms_avg_right >= 10){
                 my_disp->PushChar(19 - i, 1, 0x0012, GREEN);
                 rms_avg_right -= 10;
               }else{
-                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)rms_avg_right, GREEN);
+                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)(0.9 * rms_avg_right), GREEN);
                 rms_avg_right = 0.0;
               }
             }
