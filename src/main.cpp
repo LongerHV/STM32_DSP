@@ -60,7 +60,6 @@ uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
-// uint8_t __attribute__((section(".sdram"))) sdram_test[10];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
 uint16_t *output_buffer;
@@ -143,15 +142,14 @@ int main(void)
 
 
   // SDRAM initialization sequence
-  // SDRAM_InitSequence(&hsdram1);
-  // HAL_Delay(1000);
+  SDRAM_InitSequence(&hsdram1);
+  HAL_Delay(100);
 
   // TESTING FMC
-  // uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
-  // uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  // HAL_SDRAM_Write_8b(&hsdram1, (uint32_t *)&sdram_test[0], &Src[0], 10);
-  // HAL_SDRAM_Read_8b(&hsdram1, (uint32_t *)&sdram_test[0], &Dst[0], 10);
-  // HAL_Delay(1000);
+  uint32_t *pSdram = (uint32_t *) 0xD0000000;
+  uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+  uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  // HAL_Delay(100);
 
   // TESTING LCD SPI
   Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
@@ -192,6 +190,8 @@ int main(void)
   uint16_t colour;
   uint8_t cnt_rms = 0;
 
+  HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
+  HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
   /* USER CODE END 2 */
 
   /* Infinite loop */

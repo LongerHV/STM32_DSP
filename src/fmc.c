@@ -91,8 +91,8 @@ void MX_FMC_Init(void)
   hsdram1.Instance = FMC_SDRAM_DEVICE;
   /* hsdram1.Init */
   hsdram1.Init.SDBank = FMC_SDRAM_BANK2;
-  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_8;
-  hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_12;
+  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9;
+  hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;
   hsdram1.Init.MemoryDataWidth = FMC_SDRAM_MEM_BUS_WIDTH_8;
   hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
   hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;
@@ -106,8 +106,8 @@ void MX_FMC_Init(void)
   SdramTiming.SelfRefreshTime = 4;
   SdramTiming.RowCycleDelay = 4;
   SdramTiming.WriteRecoveryTime = 4;
-  SdramTiming.RPDelay = 2;
-  SdramTiming.RCDDelay = 1;
+  SdramTiming.RPDelay = 4;
+  SdramTiming.RCDDelay = 4;
 
   if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK)
   {
@@ -154,6 +154,7 @@ static void HAL_FMC_MspInit(void){
   PE10   ------> FMC_D7
   PD14   ------> FMC_D0
   PD15   ------> FMC_D1
+  PG2   ------> FMC_A12
   PG4   ------> FMC_BA0
   PG5   ------> FMC_BA1
   PG8   ------> FMC_SDCLK
@@ -184,8 +185,8 @@ static void HAL_FMC_MspInit(void){
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /* GPIO_InitStruct */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5 
-                          |GPIO_PIN_8|GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4 
+                          |GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -269,6 +270,7 @@ static void HAL_FMC_MspDeInit(void){
   PE10   ------> FMC_D7
   PD14   ------> FMC_D0
   PD15   ------> FMC_D1
+  PG2   ------> FMC_A12
   PG4   ------> FMC_BA0
   PG5   ------> FMC_BA1
   PG8   ------> FMC_SDCLK
@@ -285,8 +287,8 @@ static void HAL_FMC_MspDeInit(void){
 
   HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0);
 
-  HAL_GPIO_DeInit(GPIOG, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5 
-                          |GPIO_PIN_8|GPIO_PIN_15);
+  HAL_GPIO_DeInit(GPIOG, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4 
+                          |GPIO_PIN_5|GPIO_PIN_8|GPIO_PIN_15);
 
   HAL_GPIO_DeInit(GPIOE, GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10);
 
