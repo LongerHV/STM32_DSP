@@ -60,7 +60,7 @@ uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
-// uint32_t __attribute__((section(".sdram"))) sdram_test[24000];
+// uint8_t __attribute__((section(".sdram"))) sdram_test[10];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
 uint16_t *output_buffer;
@@ -143,29 +143,19 @@ int main(void)
 
 
   // SDRAM initialization sequence
-  SDRAM_InitSequence(&hsdram1);
+  // SDRAM_InitSequence(&hsdram1);
+  // HAL_Delay(1000);
 
   // TESTING FMC
-  uint32_t *pSdram = (uint32_t *) 0xD0000000;
-  // uint32_t pSdram = 0xD0000800;
-  uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
-  uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
-  // for(uint8_t i = 0; i < 10; i++){
-  //   *(__IO uint8_t *) (pSdram + i) = Src[i];
-  // }
-  HAL_Delay(100);
-  HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
-  // for(uint8_t i = 0; i < 10; i++){
-  //   Dst[i] = *(__IO uint8_t *) (pSdram + i);
-  // }
+  // uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+  // uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  // HAL_SDRAM_Write_8b(&hsdram1, (uint32_t *)&sdram_test[0], &Src[0], 10);
+  // HAL_SDRAM_Read_8b(&hsdram1, (uint32_t *)&sdram_test[0], &Dst[0], 10);
+  // HAL_Delay(1000);
 
   // TESTING LCD SPI
   Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
   my_disp->FillScreen(BLACK);
-  for(uint8_t i = 0; i < 10; i++){
-    my_disp->DrawChar(0, i, Dst[i], 0xFFFF, 0x0000);
-  }
 
   // Initializing effects
   Effect *effects[10];
