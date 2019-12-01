@@ -5,10 +5,11 @@ Parameter::Parameter(const char *name){
     for(i = 0; name[i] != '\000' && i < 11; i++){
         this->name[i] = name[i];
     }
-    for(; name[i] < 11; i++){
+    for(; name[i] < 10; i++){
         this->name[i] = ' ';
     }
-    this->value = 0;
+    this->name[10] = '\000';
+    this->value = 50;
     this->UpdateValRepr();
 }
 

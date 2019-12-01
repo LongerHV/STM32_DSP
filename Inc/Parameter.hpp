@@ -10,7 +10,6 @@ class Parameter{
         char val_repr[5];
         friend class Effect;
 
-
     public:
         Parameter(const char *name);
         char* GetName();
@@ -21,6 +20,5 @@ class Parameter{
         void DecrementValue();
         void UpdateValRepr();
 };
-
 
 #endif

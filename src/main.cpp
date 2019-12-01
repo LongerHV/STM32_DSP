@@ -30,8 +30,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Delay.hpp"
-#include "Display.hpp"
+#include "MultiEffect.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,10 +55,10 @@ uint8_t block_counter = 0;
 uint8_t block_ready = 0;
 uint16_t buffer[6][BLOCK_SIZE];
 // remember to specify in STM32H743ZI_FLASH.LD linker file
-uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
+uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
 uint16_t *output_buffer;
@@ -140,7 +139,6 @@ int main(void)
   if (HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL) != HAL_OK)
     return 0;
 
-
   // SDRAM initialization sequence
   SDRAM_InitSequence(&hsdram1);
   HAL_Delay(100);
@@ -151,44 +149,7 @@ int main(void)
   uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   // HAL_Delay(100);
 
-  // TESTING LCD SPI
-  Display *my_disp = new Display(128, 160, &hspi1, &character_buffer[0]);
-  my_disp->FillScreen(BLACK);
-
-  // Initializing effects
-  Effect *effects[10];
-  for(uint8_t i = 0; i < 10; i++) effects[i] = NULL;
-  DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], 48000, 40000);
-  DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], 48000, 35000);
-  effects[0] = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-  effects[1] = new Delay("Delay2", left_delay, right_delay, 0.0, 1.0, 0.0);
-
-  // printing UI
-  my_disp->PushString(0, 0, effects[0]->GetName(), WHITE);
-  for(int8_t i = 0; i < 5; i++){
-    my_disp->PushString(4 + i, 1, effects[0]->GetParamName(i), WHITE);
-    my_disp->PushChar(4 + i, 11, ':', WHITE);
-    my_disp->PushString(4 + i, 12, effects[0]->GetParamValRepr(i), WHITE);
-  }
-  my_disp->PushChar(4, 0, '>', WHITE);
-
-  // Test variable for encoder
-  int8_t cnt_effect = 0;
-  int8_t cnt_param = 0;
-  uint8_t param_flag = 1;
-  uint8_t val_flag = 0;
-  uint8_t button_states = 0;
-  uint8_t button_pressed = 0;
-
-  // UV meter
-  float32_t rms_left = 0.0;
-  float32_t rms_right = 0.0;
-  float32_t rms_avg_left = 0.0;
-  float32_t rms_avg_right = 0.0;
-  float32_t rms_avg_left2 = 0.0;
-  float32_t rms_avg_right2 = 0.0;
-  uint16_t colour;
-  uint8_t cnt_rms = 0;
+  MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
   HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
   HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
@@ -196,121 +157,27 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1)
-    {
-        if (block_ready)
-        {
-          // Convert data to float
-          arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
-          arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
+  while (1){
+    if (block_ready){
+      // Convert data to float
+      arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
+      arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
-          // UV meter stuff
-          arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_right);
-          arm_rms_f32(&data[1][0], BLOCK_SIZE, &rms_left);
-          rms_avg_left += rms_left;
-          rms_avg_right += rms_right;
-          if(cnt_rms++ >= 100){
-            if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.95 * rms_avg_left2;
-            if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.95 * rms_avg_right2;
-            rms_avg_left2 = rms_avg_left;
-            rms_avg_right2 = rms_avg_right;
+      // CODE HERE (modify data)
 
-            for(uint8_t i = 0; i < 5; i++){
-              colour = i < 3 ? GREEN : (i == 3 ? YELLOW : RED);
-              if(rms_avg_left >= 10){
-                my_disp->PushChar(19 - i, 0, 0x0012, colour);
-                rms_avg_left -= 10;
-              }else{
-                my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)(0.9 * rms_avg_left), colour);
-                rms_avg_left = 0.0;
-              }
-              if(rms_avg_right >= 10){
-                my_disp->PushChar(19 - i, 1, 0x0012, colour);
-                rms_avg_right -= 10;
-              }else{
-                my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)(0.9 * rms_avg_right), colour);
-                rms_avg_right = 0.0;
-              }
-            }
+      master->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+      master->UpdateUI();
 
-            rms_avg_left = 0.0;
-            rms_avg_right = 0.0;
-            cnt_rms = 0;
-          }
+      // CODE ENDS HERE
 
-          // CODE HERE (modify data)
-
-          effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
-
-          // CODE ENDS HERE
-          // Convert data back to 16 bit unsigned integer
-          arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
-          arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
-          block_ready = 0;
-
-          // User Interface update
-          my_disp->Pop();
-
-          // Button press detection
-          button_states <<= 1;
-          button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
-          button_pressed = button_states == 1;
-          if(button_pressed){
-            uint16_t colour;
-            if(param_flag){
-              colour = GREEN; 
-            }else{
-              colour = WHITE;
-            }
-            my_disp->PushChar(4 + cnt_param, 0, '>', colour);
-            my_disp->PushString(4 + cnt_param, 1, effects[cnt_effect]->parameters[cnt_param]->GetName(), colour);
-            my_disp->PushChar(4 + cnt_param, 11, ':', colour);
-            my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), colour);
-
-            val_flag = param_flag;
-            param_flag = !param_flag;
-            button_pressed = 0;
-          }
-
-          // Change effect
-          if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
-            if(UpdateEncoder(&htim4, &cnt_effect, 0, 1)){
-              my_disp->PushString(0, 0, effects[cnt_effect]->GetName(), WHITE);
-              for(int8_t i = 0; i < 5; i++){
-                my_disp->PushString(4 + i, 1, effects[cnt_effect]->GetParamName(i), WHITE);
-                my_disp->PushChar(4 + i, 11, ':', WHITE);
-                my_disp->PushString(4 + i, 12, effects[cnt_effect]->GetParamValRepr(i), WHITE);
-              }
-              my_disp->PushChar(4 + cnt_param, 0, ' ', WHITE);
-              my_disp->PushChar(4, 0, '>', WHITE);
-              cnt_param = 0;
-              param_flag = 1;
-              val_flag = 0;
-            }
-          // Change parameter
-          }else if(param_flag){
-            if(UpdateEncoder(&htim4, &cnt_param, 0, 4)){
-              for(uint8_t i = 0; i < 5; i++){
-                if(i == cnt_param){
-                  my_disp->PushChar(4 + i, 0, '>', WHITE);
-                }else{
-                  my_disp->PushChar(4 + i, 0, ' ', WHITE);
-                }
-              }
-
-            }
-          // Modify parameter value
-          }else if(val_flag){
-            if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
-              effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
-              my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), GREEN);
-            }
-          }
-        }
+      // Convert data back to 16 bit unsigned integer
+      arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
+      arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
+      block_ready = 0;
     }
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END WHILE */
+  /* USER CODE BEGIN 3 */
   /* USER CODE END 3 */
 }
 

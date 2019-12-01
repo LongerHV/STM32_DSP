@@ -7,7 +7,6 @@
 #include "mymath.h"
 
 class Delay: public Effect{
-// class Delay{
     private:
         DelayBlock *delay_left;
         DelayBlock *delay_right;
