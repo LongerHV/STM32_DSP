@@ -31,8 +31,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MultiEffect.hpp"
-#include "Delay.hpp"
-#include "Display.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -141,7 +139,6 @@ int main(void)
   if (HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL) != HAL_OK)
     return 0;
 
-
   // SDRAM initialization sequence
   SDRAM_InitSequence(&hsdram1);
   HAL_Delay(100);
@@ -165,7 +162,6 @@ int main(void)
       // Convert data to float
       arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
       arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
-
 
       // CODE HERE (modify data)
 
