@@ -8,6 +8,7 @@
 class Effect{
     protected:
         char name[9];
+        friend class MultiEffect;
 
     public:
         Parameter *parameters[10];
