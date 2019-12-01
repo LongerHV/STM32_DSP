@@ -14,6 +14,7 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, 
     this->parameters[2] = new Parameter("Feedback");
     this->parameters[3] = new Parameter("Dry level");
     this->parameters[4] = new Parameter("Wet level");
+    for(uint8_t i = 5; i < 10; i++) parameters[i] = NULL;
 }
 
 Delay::~Delay(){

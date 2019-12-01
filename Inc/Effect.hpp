@@ -8,6 +8,8 @@
 class Effect{
     protected:
         char name[9];
+        Effect *pNext;
+        Effect *pPrev;
         friend class MultiEffect;
 
     public:
