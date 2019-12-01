@@ -6,13 +6,14 @@
 
 MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tft_spi){
     this->htim = encoder_timer;
+    encoder_timer->Instance->CNT = 0x7FFF;
 
     this->InitializeLCD(tft_spi);
     this->InitializeEffects();
 
     // printing UI
     this->my_disp->PushString(0, 0, this->current_effect->GetName(), WHITE);
-    for(int8_t i = 0; i < 5; i++){
+    for(int8_t i = 0; i < this->current_effect->number_of_parameters; i++){
         this->my_disp->PushString(4 + i, 1, this->current_effect->GetParamName(i), WHITE);
         this->my_disp->PushChar(4 + i, 11, ':', WHITE);
         this->my_disp->PushString(4 + i, 12, this->current_effect->GetParamValRepr(i), WHITE);
@@ -98,22 +99,23 @@ void MultiEffect::UpdateUI(){
 }
 
 uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max){
-  static uint16_t last_tim_cnt = 0;
-  int tim_diff = htim->Instance->CNT - last_tim_cnt;
-  uint8_t ret_val = 0;
-  if(tim_diff >= 4 || tim_diff <= -4){
-    ret_val = 1;
-    tim_diff /= 4;
-    *var -= (int8_t)tim_diff;
-    if(*var > max){
-      *var = max;
-      ret_val = 0;
-    } 
-    if(*var < min) {
-      *var = min;
-      ret_val = 0;
+    static uint16_t last_tim_cnt = 0x7FFF;
+    uint16_t current = htim->Instance->CNT;
+    int tim_diff = current - last_tim_cnt;
+    uint8_t ret_val = 0;
+    if(tim_diff >= 4 || tim_diff <= -4){
+        ret_val = 1;
+        tim_diff /= 4;
+        *var -= (int8_t)tim_diff;
+        if(*var > max){
+            *var = max;
+            ret_val = 0;
+        } 
+        if(*var < min) {
+            *var = min;
+            ret_val = 0;
+        }
+        last_tim_cnt = current;
     }
-    last_tim_cnt = htim->Instance->CNT;
-  }
-  return ret_val;
+    return ret_val;
 }
