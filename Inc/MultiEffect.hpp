@@ -4,13 +4,13 @@
 #include "arm_math.h"
 #include "Effect.hpp"
 #include "Display.hpp"
+#include "VU.hpp"
 
 class MultiEffect{
     private:
         Display *my_disp;
-        Effect *current_effect;
-        Effect *pHead;
-        Effect *pTail;
+        Effect *current_effect, *pHead, *pTail;
+        VU *VU_pre_L, *VU_pre_R, *VU_post_L, *VU_post_R;
         TIM_HandleTypeDef *htim;
         uint8_t param_flag = 1;
         uint8_t val_flag = 0;

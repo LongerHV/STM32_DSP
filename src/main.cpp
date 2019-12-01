@@ -154,16 +154,6 @@ int main(void)
 
   MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
-  // UV meter
-  // float32_t rms_left = 0.0;
-  // float32_t rms_right = 0.0;
-  // float32_t rms_avg_left = 0.0;
-  // float32_t rms_avg_right = 0.0;
-  // float32_t rms_avg_left2 = 0.0;
-  // float32_t rms_avg_right2 = 0.0;
-  // uint16_t colour;
-  // uint8_t cnt_rms = 0;
-
   HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
   HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
   /* USER CODE END 2 */
@@ -176,39 +166,6 @@ int main(void)
       arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
       arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
-      // // UV meter stuff
-      // arm_rms_f32(&data[0][0], BLOCK_SIZE, &rms_right);
-      // arm_rms_f32(&data[1][0], BLOCK_SIZE, &rms_left);
-      // rms_avg_left += rms_left;
-      // rms_avg_right += rms_right;
-      // if(cnt_rms++ >= 100){
-      //   if(rms_avg_left < rms_avg_left2) rms_avg_left = 0.95 * rms_avg_left2;
-      //   if(rms_avg_right < rms_avg_right2) rms_avg_right = 0.95 * rms_avg_right2;
-      //   rms_avg_left2 = rms_avg_left;
-      //   rms_avg_right2 = rms_avg_right;
-
-      //   for(uint8_t i = 0; i < 5; i++){
-      //     colour = i < 3 ? GREEN : (i == 3 ? YELLOW : RED);
-      //     if(rms_avg_left >= 10){
-      //       master->my_disp->PushChar(19 - i, 0, 0x0012, colour);
-      //       rms_avg_left -= 10;
-      //     }else{
-      //       master->my_disp->PushChar(19 - i, 0, 0x000A + (uint8_t)(0.9 * rms_avg_left), colour);
-      //       rms_avg_left = 0.0;
-      //     }
-      //     if(rms_avg_right >= 10){
-      //       master->my_disp->PushChar(19 - i, 1, 0x0012, colour);
-      //       rms_avg_right -= 10;
-      //     }else{
-      //       master->my_disp->PushChar(19 - i, 1, 0x000A + (uint8_t)(0.9 * rms_avg_right), colour);
-      //       rms_avg_right = 0.0;
-      //     }
-      //   }
-
-      //   rms_avg_left = 0.0;
-      //   rms_avg_right = 0.0;
-      //   cnt_rms = 0;
-      // }
 
       // CODE HERE (modify data)
 
@@ -216,6 +173,7 @@ int main(void)
       master->UpdateUI();
 
       // CODE ENDS HERE
+
       // Convert data back to 16 bit unsigned integer
       arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
       arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);

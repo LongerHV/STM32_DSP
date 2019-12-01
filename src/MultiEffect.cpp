@@ -21,6 +21,12 @@ MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tf
         this->my_disp->PushString(4 + i, 12, this->current_effect->GetParamValRepr(i), WHITE);
     }
     this->my_disp->PushChar(4, 0, '>', WHITE);
+
+    this->VU_pre_L = new VU(19, 0, this->my_disp);
+    this->VU_pre_R = new VU(19, 1, this->my_disp);
+    this->VU_post_L = new VU(19, 14, this->my_disp);
+    this->VU_post_R = new VU(19, 15, this->my_disp);
+
 }
 
 void MultiEffect::InitializeLCD(SPI_HandleTypeDef *hspi){
@@ -41,7 +47,11 @@ void MultiEffect::InitializeEffects(){
 }
 
 void MultiEffect::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){
+    this->VU_pre_L->Update(pData_left, block_size);
+    this->VU_pre_R->Update(pData_right, block_size);
     this->current_effect->ProcessBlock(pData_left, pData_right, block_size);
+    this->VU_post_L->Update(pData_left, block_size);
+    this->VU_post_R->Update(pData_right, block_size);
 }
 
 void MultiEffect::UpdateUI(){
