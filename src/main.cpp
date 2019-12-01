@@ -174,7 +174,6 @@ int main(void)
 
   // Test variable for encoder
   int8_t cnt_effect = 0;
-  int8_t cnt_param = 0;
   uint8_t param_flag = 1;
   uint8_t val_flag = 0;
   uint8_t button_states = 0;
@@ -189,6 +188,7 @@ int main(void)
   float32_t rms_avg_right2 = 0.0;
   uint16_t colour;
   uint8_t cnt_rms = 0;
+  Effect *current_effect = effects[0];
 
   HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
   HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
@@ -200,6 +200,9 @@ int main(void)
     {
         if (block_ready)
         {
+          // Current effect pointer update
+          current_effect = effects[cnt_effect];
+
           // Convert data to float
           arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
           arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
@@ -240,7 +243,7 @@ int main(void)
 
           // CODE HERE (modify data)
 
-          effects[cnt_effect]->ProcessBlock(data[0], data[1], BLOCK_SIZE);
+          current_effect->ProcessBlock(data[0], data[1], BLOCK_SIZE);
 
           // CODE ENDS HERE
           // Convert data back to 16 bit unsigned integer
@@ -262,10 +265,10 @@ int main(void)
             }else{
               colour = WHITE;
             }
-            my_disp->PushChar(4 + cnt_param, 0, '>', colour);
-            my_disp->PushString(4 + cnt_param, 1, effects[cnt_effect]->parameters[cnt_param]->GetName(), colour);
-            my_disp->PushChar(4 + cnt_param, 11, ':', colour);
-            my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), colour);
+            my_disp->PushChar(4 + current_effect->current_parameter, 0, '>', colour);
+            my_disp->PushString(4 + current_effect->current_parameter, 1, current_effect->GetCurrentParam()->GetName(), colour);
+            my_disp->PushChar(4 + current_effect->current_parameter, 11, ':', colour);
+            my_disp->PushString(4 + current_effect->current_parameter, 12, current_effect->GetCurrentParam()->GetValRepr(), colour);
 
             val_flag = param_flag;
             param_flag = !param_flag;
@@ -275,23 +278,23 @@ int main(void)
           // Change effect
           if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)){
             if(UpdateEncoder(&htim4, &cnt_effect, 0, 1)){
-              my_disp->PushString(0, 0, effects[cnt_effect]->GetName(), WHITE);
+              my_disp->PushString(0, 0, current_effect->GetName(), WHITE);
               for(int8_t i = 0; i < 5; i++){
-                my_disp->PushString(4 + i, 1, effects[cnt_effect]->GetParamName(i), WHITE);
+                my_disp->PushString(4 + i, 1, current_effect->GetParamName(i), WHITE);
                 my_disp->PushChar(4 + i, 11, ':', WHITE);
-                my_disp->PushString(4 + i, 12, effects[cnt_effect]->GetParamValRepr(i), WHITE);
+                my_disp->PushString(4 + i, 12, current_effect->GetParamValRepr(i), WHITE);
               }
-              my_disp->PushChar(4 + cnt_param, 0, ' ', WHITE);
+              my_disp->PushChar(4 + current_effect->current_parameter, 0, ' ', WHITE);
               my_disp->PushChar(4, 0, '>', WHITE);
-              cnt_param = 0;
+              current_effect->current_parameter = 0;
               param_flag = 1;
               val_flag = 0;
             }
           // Change parameter
           }else if(param_flag){
-            if(UpdateEncoder(&htim4, &cnt_param, 0, 4)){
-              for(uint8_t i = 0; i < 5; i++){
-                if(i == cnt_param){
+            if(UpdateEncoder(&htim4, &current_effect->current_parameter, 0, 4)){
+              for(uint8_t i = 0; i < current_effect->number_of_parameters; i++){
+                if(i == current_effect->current_parameter){
                   my_disp->PushChar(4 + i, 0, '>', WHITE);
                 }else{
                   my_disp->PushChar(4 + i, 0, ' ', WHITE);
@@ -301,9 +304,9 @@ int main(void)
             }
           // Modify parameter value
           }else if(val_flag){
-            if(UpdateEncoder(&htim4, effects[cnt_effect]->parameters[cnt_param]->GetValuePtr(), 0, 100)){
-              effects[cnt_effect]->parameters[cnt_param]->UpdateValRepr();
-              my_disp->PushString(4 + cnt_param, 12, effects[cnt_effect]->parameters[cnt_param]->GetValRepr(), GREEN);
+            if(UpdateEncoder(&htim4, current_effect->GetCurrentParam()->GetValuePtr(), 0, 100)){
+              current_effect->GetCurrentParam()->UpdateValRepr();
+              my_disp->PushString(4 + current_effect->current_parameter, 12, current_effect->GetCurrentParam()->GetValRepr(), GREEN);
             }
           }
         }

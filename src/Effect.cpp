@@ -20,6 +20,10 @@ char *Effect::GetParamValRepr(int8_t param_id){
     return this->parameters[param_id]->GetValRepr();
 }
 
+Parameter *Effect::GetCurrentParam(){
+    return this->parameters[this->current_parameter];
+}
+
 void Effect::SetName(const char *name){
     uint8_t i;
     for(i = 0; name[i] != '\000'; i++){
