@@ -138,19 +138,18 @@ int main(void) {
     if (HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL) != HAL_OK) return 0;
 
     // SDRAM initialization sequence
-    SDRAM_InitSequence(&hsdram1);
-    HAL_Delay(100);
+    // SDRAM_InitSequence(&hsdram1);
+    // HAL_Delay(100);
 
     // TESTING FMC
-    uint32_t *pSdram = (uint32_t *)0xD0000000;
-    uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
-    uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    // HAL_Delay(100);
+    // uint32_t *pSdram = (uint32_t *)0xD0000000;
+    // uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+    // uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
-    HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
-    HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
+    // HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
+    // HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
     /* USER CODE END 2 */
 
     /* Infinite loop */
