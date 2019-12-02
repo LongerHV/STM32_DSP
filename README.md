@@ -1,5 +1,8 @@
 # STM32_DSP
 
 To do:
-- Link parameter class with effects
-- Implement comb filters, modulations, LFO, Delays mono/stereo
+- Implement process block for modulation effect
+- Implement reverb, filters, pitch shifter
+- Add scrolling list for more parameters
+- Change encoder function to use setters and getters to update value
+- Change parameters to use setters and getters to update values

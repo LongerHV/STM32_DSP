@@ -48,9 +48,11 @@ extern uint16_t* hidden_buffer;
 extern uint16_t* output_buffer;
 extern uint16_t* temp_buffer;
 extern uint32_t input_sample[2];
-extern uint8_t  character_buffer[128];
-extern q15_t  delay_buffer1[48000];
-extern q15_t  delay_buffer2[48000];
+extern uint8_t character_buffer[128];
+extern q15_t delay_buffer1[48000];
+extern q15_t delay_buffer2[48000];
+extern q15_t mod_buffer1[4800];
+extern q15_t mod_buffer2[4800];
 // extern Display *pDisp;
 /* USER CODE END ET */
 
