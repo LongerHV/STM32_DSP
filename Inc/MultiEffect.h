@@ -6,6 +6,9 @@
 #include "VU.h"
 #include "arm_math.h"
 
+#define DELAY_SIZE 48000
+#define MODULATION_DELAY_SIZE 4800
+
 class MultiEffect {
    private:
     Display *my_disp;

@@ -30,7 +30,7 @@ class Modulation : public Effect {
     uint8_t type;
 
    public:
-    Modulation(const char *name, DelayBlock *left_delay, DelayBlock *right_delay, float32_t wet_level, float32_t dry_level, float32_t feedback, float32_t depth, float32_t rate, uint32_t delay);
+    Modulation(const char *name, DelayBlock *left_delay, DelayBlock *right_delay);
     ~Modulation();
     void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
     float32_t GetLFO();

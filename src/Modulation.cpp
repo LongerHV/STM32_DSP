@@ -1,16 +1,11 @@
 #include "Modulation.h"
 
-Modulation::Modulation(const char *name, DelayBlock *left_delay, DelayBlock *right_delay, float32_t wet_level, float32_t dry_level, float32_t feedback, float32_t depth, float32_t rate, uint32_t delay) {
+Modulation::Modulation(const char *name, DelayBlock *left_delay, DelayBlock *right_delay) {
     this->SetName(name);
     this->left_delay = left_delay;
     this->right_delay = right_delay;
-    this->wet_level = wet_level;
-    this->dry_level = dry_level;
-    this->feedback = feedback;
-    this->depth = depth;
-    this->rate = rate;
-    this->max_delay = delay;
-    this->delay = 0.5 * this->max_delay;
+    this->max_delay = left_delay->GetMaxDelay();
+    this->delay = 0.1 * this->max_delay;
 
     this->number_of_parameters = 6;
     this->current_parameter = 0;

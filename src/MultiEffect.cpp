@@ -34,13 +34,12 @@ void MultiEffect::InitializeLCD(SPI_HandleTypeDef *hspi) {
 }
 
 void MultiEffect::InitializeEffects() {
-    DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], 48000, 40000);
-    DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], 48000, 35000);
-    DelayBlock *left_mod_delay = new DelayBlock(&mod_buffer1[0], 4800, 480);
-    DelayBlock *right_mod_delay = new DelayBlock(&mod_buffer2[0], 4800, 480);
-    this->pHead = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-    this->pTail = new Modulation("Mod", left_mod_delay, right_mod_delay, 0.75, 0.75, 0.0, 0.5, 1.0, 480);
-    // this->pTail = new Delay("Delay 2", left_delay, right_delay, 0.0, 1.0, 0.0);
+    DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], DELAY_SIZE, 40000);
+    DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], DELAY_SIZE, 35000);
+    DelayBlock *left_mod_delay = new DelayBlock(&mod_buffer1[0], MODULATION_DELAY_SIZE, 480);
+    DelayBlock *right_mod_delay = new DelayBlock(&mod_buffer2[0], MODULATION_DELAY_SIZE, 480);
+    this->pHead = new Delay("Delay", left_delay, right_delay);
+    this->pTail = new Modulation("Mod", left_mod_delay, right_mod_delay);
     this->pHead->pNext = this->pTail;
     this->pTail->pPrev = this->pHead;
     this->pHead->pPrev = NULL;

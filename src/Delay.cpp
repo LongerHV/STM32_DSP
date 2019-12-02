@@ -1,14 +1,12 @@
 #include "Delay.h"
 
-Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level) {
+Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right) {
     this->SetName(name);
     this->delay_left = delay_left;
     this->delay_right = delay_right;
-    this->feedback = feedback;
-    this->dry_level = dry_level;
-    this->wet_level = wet_level;
     this->number_of_parameters = 5;
     this->current_parameter = 0;
+
     this->parameters[0] = new Parameter_uint32("Time left", &this->delay_left->offset, this->delay_left->max_delay);
     this->parameters[1] = new Parameter_uint32("Time right", &this->delay_right->offset, this->delay_right->max_delay);
     this->parameters[2] = new Parameter_float32("Feedback", &this->feedback, 1.0);

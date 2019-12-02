@@ -51,21 +51,25 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+// Global flags
 uint8_t block_counter = 0;
 uint8_t block_ready = 0;
-uint16_t buffer[6][BLOCK_SIZE];
-// remember to specify in STM32H743ZI_FLASH.LD linker file
+
+// Allosation in different parts of memory
 uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
-q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer1[4800];
-q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer2[4800];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[DELAY_SIZE];
+q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[DELAY_SIZE];
+q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer1[MODULATION_DELAY_SIZE];
+q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer2[MODULATION_DELAY_SIZE];
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
-uint16_t *input_buffer;
-uint16_t *hidden_buffer;
-uint16_t *output_buffer;
+
+// Defining global buffers
+uint16_t buffer[6][BLOCK_SIZE];
+uint16_t *input_buffer = buffer[0];
+uint16_t *hidden_buffer = buffer[2];
+uint16_t *output_buffer = buffer[4];
 uint16_t *temp_buffer;
-float data[2][BLOCK_SIZE];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,10 +130,6 @@ int main(void) {
     MX_NVIC_Init();
     /* USER CODE BEGIN 2 */
 
-    input_buffer = buffer[0];
-    hidden_buffer = buffer[2];
-    output_buffer = buffer[4];
-
     // Starting peripherials
     if (HAL_ADC_Start_DMA(&hadc3, input_sample, 2) != HAL_OK) return 0;
     if (HAL_DAC_Start(&hdac1, DAC1_CHANNEL_1) != HAL_OK) return 0;
@@ -146,7 +146,11 @@ int main(void) {
     // uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
     // uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+    // Creating master multieffect object
     MultiEffect *master = new MultiEffect(&htim4, &hspi1);
+
+    // Declaration of data buffer 
+    float data[2][BLOCK_SIZE];
 
     // HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
     // HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);

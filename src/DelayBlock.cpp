@@ -8,6 +8,10 @@ DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset) {
     this->ResetBuffer();
 }
 
+uint32_t DelayBlock::GetMaxDelay(){
+    return this->max_delay;
+}
+
 void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size) {
     uint32_t tail_index;
     for (uint32_t i = 0; i < block_size; i++) {
