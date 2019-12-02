@@ -3,10 +3,6 @@
 Parameter::Parameter() {
 }
 
-Parameter::Parameter(const char *name) {
-    this->SetName(name);
-}
-
 void Parameter::SetName(const char *name){
     uint8_t i;
     for (i = 0; name[i] != '\000' && i < 10; i++) {
@@ -16,8 +12,11 @@ void Parameter::SetName(const char *name){
         this->name[i] = ' ';
     }
     this->name[10] = '\000';
-    this->value = 50;
     this->UpdateValRepr();
+}
+
+void Parameter::SetValue(uint8_t value){
+    this->value = value;
 }
 
 char *Parameter::GetName() {
@@ -59,6 +58,7 @@ void Parameter::UpdateValRepr() {
 }
 
 Parameter_float32::Parameter_float32(const char *name, float32_t *pValue, float32_t max_value) {
+    this->SetValue(50);
     this->SetName(name);
     this->pValue = pValue;
     this->max_value = max_value;
@@ -73,6 +73,7 @@ void Parameter_float32::UpdateValue(){
 }
 
 Parameter_uint32::Parameter_uint32(const char *name, uint32_t *pValue, uint32_t max_value) {
+    this->SetValue(50);
     this->SetName(name);
     this->pValue = pValue;
     this->max_value = max_value;

@@ -12,8 +12,8 @@ class Parameter {
 
    public:
     Parameter();
-    Parameter(const char *name);
     void SetName(const char *name);
+    void SetValue(uint8_t value);
     char *GetName();
     char *GetValRepr();
     int8_t GetValue();
