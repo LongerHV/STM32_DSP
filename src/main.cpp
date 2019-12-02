@@ -157,8 +157,7 @@ int main(void) {
         if (block_ready) {
             // Convert data to float
             arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
-            arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0],
-                                BLOCK_SIZE);
+            arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
             // CODE HERE (modify data)
 
@@ -169,8 +168,7 @@ int main(void) {
 
             // Convert data back to 16 bit unsigned integer
             arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
-            arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE],
-                                BLOCK_SIZE);
+            arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
             block_ready = 0;
         }
     }
