@@ -1,6 +1,6 @@
 #include "Delay.h"
 
-Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
+Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level) {
     this->SetName(name);
     this->delay_left = delay_left;
     this->delay_right = delay_right;
@@ -14,28 +14,26 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, 
     this->parameters[2] = new Parameter("Feedback");
     this->parameters[3] = new Parameter("Dry level");
     this->parameters[4] = new Parameter("Wet level");
-    for(uint8_t i = 5; i < 10; i++) parameters[i] = NULL;
+    for (uint8_t i = 5; i < 10; i++) parameters[i] = NULL;
 }
 
-Delay::~Delay(){
-
+Delay::~Delay() {
 }
 
-void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){
+void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) {
     float32_t *temp_float = new float32_t[block_size];
     float32_t *feedback_block = new float32_t[block_size];
     q15_t *temp_fixed = new q15_t[block_size];
     float32_t *pData;
     DelayBlock *channel;
-    for(uint8_t i = 0; i < 2; i++){
-        if(i == 0){
+    for (uint8_t i = 0; i < 2; i++) {
+        if (i == 0) {
             channel = this->delay_left;
             pData = pData_left;
-        } 
-        else{
+        } else {
             channel = this->delay_right;
             pData = pData_right;
-        } 
+        }
 
         // Get tail blocks
         channel->GetTailBlock(temp_fixed, block_size);
@@ -55,7 +53,7 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
         // Add Wet and Dry signals
         arm_add_f32(pData, temp_float, pData, block_size);
     }
-    delete [] temp_float;
-    delete [] temp_fixed;
-    delete [] feedback_block;
+    delete[] temp_float;
+    delete[] temp_fixed;
+    delete[] feedback_block;
 }
