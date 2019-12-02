@@ -1,6 +1,7 @@
 #include "MultiEffect.h"
 #include "Delay.h"
 #include "DelayBlock.h"
+#include "Modulation.h"
 #include "main.h"
 
 MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tft_spi) {
@@ -35,8 +36,11 @@ void MultiEffect::InitializeLCD(SPI_HandleTypeDef *hspi) {
 void MultiEffect::InitializeEffects() {
     DelayBlock *left_delay = new DelayBlock(&delay_buffer2[0], 48000, 40000);
     DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], 48000, 35000);
+    DelayBlock *left_mod_delay = new DelayBlock(&mod_buffer1[0], 4800, 480);
+    DelayBlock *right_mod_delay = new DelayBlock(&mod_buffer2[0], 4800, 480);
     this->pHead = new Delay("Delay", left_delay, right_delay, 0.6, 1.0, 0.8);
-    this->pTail = new Delay("Delay 2", left_delay, right_delay, 0.0, 1.0, 0.0);
+    this->pTail = new Modulation("Mod", left_mod_delay, right_mod_delay, 0.75, 0.75, 0.0, 0.5, 1.0, 480);
+    // this->pTail = new Delay("Delay 2", left_delay, right_delay, 0.0, 1.0, 0.0);
     this->pHead->pNext = this->pTail;
     this->pTail->pPrev = this->pHead;
     this->pHead->pPrev = NULL;
@@ -54,12 +58,12 @@ void MultiEffect::ProcessBlock(float32_t *pData_left, float32_t *pData_right, ui
 
 void MultiEffect::UpdateUI() {
     // Button press detection
-    button_states <<= 1;
-    button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
-    button_pressed = button_states == 1;
-    if (button_pressed) {
+    this->button_states <<= 1;
+    this->button_states |= !HAL_GPIO_ReadPin(ENCODER_BUTTON_GPIO_Port, ENCODER_BUTTON_Pin);
+    this->button_pressed = this->button_states == 1;
+    if (this->button_pressed) {
         uint16_t colour;
-        if (param_flag) {
+        if (this->param_flag) {
             colour = GREEN;
         } else {
             colour = WHITE;
@@ -69,46 +73,48 @@ void MultiEffect::UpdateUI() {
         my_disp->PushChar(4 + current_effect->current_parameter, 11, ':', colour);
         my_disp->PushString(4 + current_effect->current_parameter, 12, current_effect->GetCurrentParam()->GetValRepr(), colour);
 
-        val_flag = param_flag;
-        param_flag = !param_flag;
-        button_pressed = 0;
+        this->val_flag = this->param_flag;
+        this->param_flag = !this->param_flag;
+        this->button_pressed = 0;
     }
 
     // Change effect
     if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin)) {
         if (this->UpdateEncoder(this->htim)) {
-            my_disp->PushString(0, 0, current_effect->GetName(), WHITE);
-            for (int8_t i = 0; i < 5; i++) {
-                my_disp->PushString(4 + i, 1, current_effect->GetParamName(i), WHITE);
-                my_disp->PushChar(4 + i, 11, ':', WHITE);
-                my_disp->PushString(4 + i, 12, current_effect->GetParamValRepr(i), WHITE);
-            }
-            for (uint8_t i = 0; i < 10; i++) {
+            uint8_t i;
+            my_disp->PushString(0, 0, this->current_effect->GetName(), WHITE);
+            for (i = 0; i < this->current_effect->number_of_parameters; i++) {
+                this->my_disp->PushString(4 + i, 1, this->current_effect->GetParamName(i), WHITE);
+                this->my_disp->PushChar(4 + i, 11, ':', WHITE);
+                this->my_disp->PushString(4 + i, 12, this->current_effect->GetParamValRepr(i), WHITE);
                 if (i == this->current_effect->current_parameter) {
-                    my_disp->PushChar(4 + i, 0, '>', WHITE);
+                    this->my_disp->PushChar(4 + i, 0, '>', WHITE);
                 } else {
-                    my_disp->PushChar(4 + i, 0, ' ', WHITE);
+                    this->my_disp->PushChar(4 + i, 0, ' ', WHITE);
                 }
             }
-            param_flag = 1;
-            val_flag = 0;
+            for (; i < 10; i++) {
+                this->my_disp->PushString(4 + i, 0, "                ", WHITE);
+            }
+            this->param_flag = 1;
+            this->val_flag = 0;
         }
         // Change parameter
-    } else if (param_flag) {
-        if (this->UpdateEncoder(this->htim, &current_effect->current_parameter, 0, 4)) {
-            for (uint8_t i = 0; i < current_effect->number_of_parameters; i++) {
-                if (i == current_effect->current_parameter) {
-                    my_disp->PushChar(4 + i, 0, '>', WHITE);
+    } else if (this->param_flag) {
+        if (this->UpdateEncoder(this->htim, &this->current_effect->current_parameter, 0, this->current_effect->number_of_parameters - 1)) {
+            for (uint8_t i = 0; i < this->current_effect->number_of_parameters; i++) {
+                if (i == this->current_effect->current_parameter) {
+                    this->my_disp->PushChar(4 + i, 0, '>', WHITE);
                 } else {
-                    my_disp->PushChar(4 + i, 0, ' ', WHITE);
+                    this->my_disp->PushChar(4 + i, 0, ' ', WHITE);
                 }
             }
         }
         // Modify parameter value
-    } else if (val_flag) {
-        if (this->UpdateEncoder(this->htim, current_effect->GetCurrentParam()->GetValuePtr(), 0, 100)) {
-            current_effect->GetCurrentParam()->UpdateValRepr();
-            my_disp->PushString(4 + current_effect->current_parameter, 12, current_effect->GetCurrentParam()->GetValRepr(), GREEN);
+    } else if (this->val_flag) {
+        if (this->UpdateEncoder(this->htim, this->current_effect->GetCurrentParam()->GetValuePtr(), 0, 100)) {
+            this->current_effect->GetCurrentParam()->UpdateValRepr();
+            this->my_disp->PushString(4 + this->current_effect->current_parameter, 12, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
         }
     }
 
@@ -147,6 +153,8 @@ uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim) {
             this->current_effect = this->current_effect->pNext;
         } else if (tim_diff >= 1 && this->current_effect->pPrev != NULL) {
             this->current_effect = this->current_effect->pPrev;
+        } else {
+            ret_val = 0;
         }
         this->last_tim_cnt = current;
     }
