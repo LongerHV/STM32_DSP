@@ -9,10 +9,10 @@ Parameter::Parameter(const char *name) {
 
 void Parameter::SetName(const char *name){
     uint8_t i;
-    for (i = 0; name[i] != '\000' && i < 11; i++) {
+    for (i = 0; name[i] != '\000' && i < 10; i++) {
         this->name[i] = name[i];
     }
-    for (; name[i] < 10; i++) {
+    for (; i < 10; i++) {
         this->name[i] = ' ';
     }
     this->name[10] = '\000';
