@@ -1,4 +1,4 @@
-#include "Delay.hpp"
+#include "Delay.h"
 
 Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, float32_t feedback, float32_t dry_level, float32_t wet_level){
     this->SetName(name);

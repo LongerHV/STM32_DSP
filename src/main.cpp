@@ -30,7 +30,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MultiEffect.hpp"
+#include "MultiEffect.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

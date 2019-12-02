@@ -1,6 +1,6 @@
-#include "MultiEffect.hpp"
-#include "DelayBlock.hpp"
-#include "Delay.hpp"
+#include "MultiEffect.h"
+#include "DelayBlock.h"
+#include "Delay.h"
 #include "main.h"
 
 

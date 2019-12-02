@@ -2,9 +2,9 @@
 #define MULTIEFFECT_H
 
 #include "arm_math.h"
-#include "Effect.hpp"
-#include "Display.hpp"
-#include "VU.hpp"
+#include "Effect.h"
+#include "Display.h"
+#include "VU.h"
 
 class MultiEffect{
     private:

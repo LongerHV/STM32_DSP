@@ -1,4 +1,4 @@
-#include "Display.hpp"
+#include "Display.h"
 #include "main.h"
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_gpio.h"

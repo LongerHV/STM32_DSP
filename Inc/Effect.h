@@ -3,7 +3,7 @@
 
 #include "arm_math.h"
 #include "mymath.h"
-#include "Parameter.hpp"
+#include "Parameter.h"
 
 class Effect{
     protected:

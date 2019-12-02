@@ -1,4 +1,4 @@
-#include "DelayBlock.hpp"
+#include "DelayBlock.h"
 
 DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset){
     this->pData = pData;

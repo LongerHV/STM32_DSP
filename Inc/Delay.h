@@ -1,8 +1,8 @@
 #ifndef DELAY_H
 #define DELAY_H
 
-#include "Effect.hpp"
-#include "DelayBlock.hpp"
+#include "Effect.h"
+#include "DelayBlock.h"
 #include "arm_math.h"
 #include "mymath.h"
 

@@ -1,4 +1,4 @@
-#include "Parameter.hpp"
+#include "Parameter.h"
 
 Parameter::Parameter(const char *name){
     uint8_t i;

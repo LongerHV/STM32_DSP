@@ -1,4 +1,4 @@
-#include "VU.hpp"
+#include "VU.h"
 
 VU::VU(uint8_t origin_y, uint8_t origin_x, Display *disp){
     this->origin_y = origin_y;
