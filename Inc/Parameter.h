@@ -3,7 +3,6 @@
 
 #include "arm_math.h"
 
-template <typename T>
 class Parameter {
    private:
     char name[11];
@@ -12,14 +11,37 @@ class Parameter {
     friend class Effect;
 
    public:
+    Parameter();
     Parameter(const char *name);
+    void SetName(const char *name);
     char *GetName();
     char *GetValRepr();
     int8_t GetValue();
     int8_t *GetValuePtr();
-    void IncrementValue();
-    void DecrementValue();
     void UpdateValRepr();
+    virtual void UpdateValue() = 0;
+};
+
+class Parameter_float32 : public Parameter {
+   private:
+    float32_t *pValue;
+    float32_t max_value;
+
+   public:
+    Parameter_float32(const char *name, float32_t *pValue, float32_t max_value);
+    ~Parameter_float32();
+    void UpdateValue();
+};
+
+class Parameter_uint32 : public Parameter {
+   private:
+    uint32_t *pValue;
+    uint32_t max_value;
+
+   public:
+    Parameter_uint32(const char *name, uint32_t *pValue, uint32_t max_value);
+    ~Parameter_uint32();
+    void UpdateValue();
 };
 
 #endif

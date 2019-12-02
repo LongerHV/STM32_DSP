@@ -114,6 +114,7 @@ void MultiEffect::UpdateUI() {
     } else if (this->val_flag) {
         if (this->UpdateEncoder(this->htim, this->current_effect->GetCurrentParam()->GetValuePtr(), 0, 100)) {
             this->current_effect->GetCurrentParam()->UpdateValRepr();
+            this->current_effect->GetCurrentParam()->UpdateValue();
             this->my_disp->PushString(4 + this->current_effect->current_parameter, 12, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
         }
     }
