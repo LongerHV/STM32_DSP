@@ -58,6 +58,8 @@ uint16_t buffer[6][BLOCK_SIZE];
 uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[48000];
 q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[48000];
+q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer1[4800];
+q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer2[4800];
 uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
 uint16_t *input_buffer;
 uint16_t *hidden_buffer;
