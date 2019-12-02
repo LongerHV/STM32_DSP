@@ -9,11 +9,11 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right, 
     this->wet_level = wet_level;
     this->number_of_parameters = 5;
     this->current_parameter = 0;
-    this->parameters[0] = new Parameter("Time left");
-    this->parameters[1] = new Parameter("Time right");
-    this->parameters[2] = new Parameter("Feedback");
-    this->parameters[3] = new Parameter("Dry level");
-    this->parameters[4] = new Parameter("Wet level");
+    this->parameters[0] = new Parameter_uint32("Time left", &this->delay_left->offset, this->delay_left->max_delay);
+    this->parameters[1] = new Parameter_uint32("Time right", &this->delay_right->offset, this->delay_right->max_delay);
+    this->parameters[2] = new Parameter_float32("Feedback", &this->feedback, 1.0);
+    this->parameters[3] = new Parameter_float32("Dry level", &this->dry_level, 1.0);
+    this->parameters[4] = new Parameter_float32("Wet level", &this->wet_level, 1.0);
     for (uint8_t i = 5; i < 10; i++) parameters[i] = NULL;
 }
 

@@ -26,6 +26,7 @@ class Modulation : public Effect {
     DelayBlock *left_delay;
     DelayBlock *right_delay;
     float32_t phi;
+    uint32_t max_delay;
     uint8_t type;
 
    public:
