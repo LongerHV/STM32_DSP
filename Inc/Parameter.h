@@ -3,6 +3,7 @@
 
 #include "arm_math.h"
 
+template <typename T>
 class Parameter {
    private:
     char name[11];
