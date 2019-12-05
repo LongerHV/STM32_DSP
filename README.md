@@ -1,6 +1,7 @@
 # STM32_DSP
 
 To do:
+- Improve screen refresh (pop when dma is ready)
 - Implement process block for modulation effect
 - Implement reverb, filters, pitch shifter
 - Add scrolling list for more parameters
