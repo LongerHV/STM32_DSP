@@ -93,7 +93,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 #define PWR_REGULATOR_VOLTAGE_SCALE0  ((uint32_t)0x00000000)
-#define BLOCK_SIZE 16
+// #define BLOCK_SIZE 16
+#define BLOCK_SIZE 64
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
 #define ADC_RESOLUTION 16
