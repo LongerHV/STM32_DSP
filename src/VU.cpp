@@ -10,7 +10,8 @@ void VU::Update(float32_t *data, uint32_t block_size) {
     uint16_t colour;
     arm_rms_f32(data, block_size, &this->rms);
     this->rms_sum += this->rms;
-    if (this->counter++ >= 100) {
+    if (this->counter++ >= 25) {
+        this->rms_sum *= 4;
         if (this->rms_sum < this->rms_sum_prev) this->rms_sum = 0.95 * this->rms_sum_prev;
         this->rms_sum_prev = this->rms_sum;
 

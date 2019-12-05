@@ -5,6 +5,7 @@
 #include "Effect.h"
 #include "VU.h"
 #include "arm_math.h"
+#include "main.h"
 
 #define DELAY_SIZE 48000
 #define MODULATION_DELAY_SIZE 4800
@@ -30,6 +31,7 @@ class MultiEffect {
     void UpdateUI();
     uint8_t UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max);
     uint8_t UpdateEncoder(TIM_HandleTypeDef *htim);
+    void DisplayPop();
 };
 
 #endif

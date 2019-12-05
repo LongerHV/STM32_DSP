@@ -160,6 +160,7 @@ int main(void) {
     /* USER CODE BEGIN WHILE */
     while (true) {
         if (block_ready) {
+            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
             // Convert data to float
             arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
             arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
@@ -175,6 +176,10 @@ int main(void) {
             arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
             arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
             block_ready = 0;
+            HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+        }
+        if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY){
+            master->DisplayPop();
         }
     }
     /* USER CODE END WHILE */

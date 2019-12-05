@@ -117,8 +117,6 @@ void MultiEffect::UpdateUI() {
             this->my_disp->PushString(4 + this->current_effect->current_parameter, 12, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
         }
     }
-
-    this->my_disp->Pop();
 }
 
 uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max) {
@@ -159,4 +157,8 @@ uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim) {
         this->last_tim_cnt = current;
     }
     return ret_val;
+}
+
+void MultiEffect::DisplayPop(){
+    this->my_disp->Pop();
 }

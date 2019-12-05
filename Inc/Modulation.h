@@ -5,6 +5,7 @@
 #include "Effect.h"
 #include "arm_math.h"
 #include "mymath.h"
+#include "main.h"
 
 #define LFO_NONE (uint8_t)0
 #define LFO_SINUSOIDAL (uint8_t)1
