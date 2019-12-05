@@ -29,7 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
-#include "stm32h7xx_hal.h"
+// #include "stm32h7xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -37,7 +37,7 @@ extern "C" {
 #include "arm_const_structs.h"
 #include <stdlib.h>
 #include "mymath.h"
-#include "stm32h743xx.h"
+// #include "stm32h743xx.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
