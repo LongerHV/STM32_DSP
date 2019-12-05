@@ -178,6 +178,9 @@ int main(void) {
             block_ready = 0;
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
         }
+        if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY){
+            master->DisplayPop();
+        }
     }
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
