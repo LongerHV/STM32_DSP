@@ -4,6 +4,7 @@
 #include "arm_math.h"
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_spi.h"
+#include "main.h"
 
 // Colours Definitions
 #define RED ((uint16_t)0xF800)

@@ -2,6 +2,7 @@
 #define PARAMETER_HPP
 
 #include "arm_math.h"
+#include "main.h"
 
 class Parameter {
    private:

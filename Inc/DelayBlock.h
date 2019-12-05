@@ -3,6 +3,7 @@
 
 #include "arm_math.h"
 #include "mymath.h"
+#include "main.h"
 
 class DelayBlock {
    private:
