@@ -18,8 +18,8 @@ class Biquad : public Effect {
     private:
     arm_biquad_casd_df1_inst_f32 *filter_instance_L;
     arm_biquad_casd_df1_inst_f32 *filter_instance_R;
-    float32_t Fs, Fc, Q, peek_gain;
-    uint8_t type;
+    float32_t Fs, Fc, Q, peak_gain;
+    uint32_t type;
 
     public:
     Biquad(const char *name);
