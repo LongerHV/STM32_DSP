@@ -2,6 +2,7 @@
 
 To do:
 - Make coeffitients update for biquad filters
+- Implement other types of biquad filter
 - Change VU from rms to peak detection
 - Implement process block for modulation effect
 - Change parameters to be %, dB, Hz, number with min and max borders
