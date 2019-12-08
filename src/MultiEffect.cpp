@@ -1,4 +1,5 @@
 #include "MultiEffect.h"
+#include "Biquad.h"
 #include "Delay.h"
 #include "DelayBlock.h"
 #include "Modulation.h"
@@ -10,7 +11,7 @@ MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tf
 
     this->InitializeLCD(tft_spi);
 
-    this->current_effect = this->pHead = this->pTail = NULL;
+    this->pHead = this->pTail = this->current_effect = NULL;
     this->InitializeEffects();
 
     // printing UI
@@ -38,12 +39,17 @@ void MultiEffect::InitializeEffects() {
     DelayBlock *right_delay = new DelayBlock(&delay_buffer1[0], DELAY_SIZE, 35000);
     DelayBlock *left_mod_delay = new DelayBlock(&mod_buffer1[0], MODULATION_DELAY_SIZE, 480);
     DelayBlock *right_mod_delay = new DelayBlock(&mod_buffer2[0], MODULATION_DELAY_SIZE, 480);
-    this->pHead = new Delay("Delay", left_delay, right_delay);
-    this->pTail = new Modulation("Mod", left_mod_delay, right_mod_delay);
-    this->pHead->pNext = this->pTail;
-    this->pTail->pPrev = this->pHead;
-    this->pHead->pPrev = NULL;
-    this->pTail->pNext = NULL;
+    Effect *pNew;
+
+    pNew = new Delay("Delay", left_delay, right_delay);
+    this->AddEffect(pNew);
+
+    pNew = new Modulation("Mod", left_mod_delay, right_mod_delay);
+    this->AddEffect(pNew);
+
+    pNew = new Biquad("Biquad");
+    this->AddEffect(pNew);
+
     this->current_effect = this->pHead;
 }
 
@@ -161,4 +167,17 @@ uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim) {
 
 void MultiEffect::DisplayPop(){
     this->my_disp->Pop();
+}
+
+void MultiEffect::AddEffect(Effect *pNew){
+    if(this->pHead == NULL && this->pTail == NULL){
+        this->pHead = pNew;
+        this->pTail = this->pHead;
+        this->pHead->pPrev = this->pTail->pNext = NULL;
+    } else {
+        this->pTail->pNext = pNew;
+        pNew->pPrev = this->pTail;
+        this->pTail = this->pTail->pNext;
+        this->pTail->pNext = NULL;
+    }
 }
