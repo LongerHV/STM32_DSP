@@ -4,6 +4,10 @@ float32_t arm_atg(float32_t x){
     return arm_cos_f32(x) / arm_sin_f32(x);
 }
 
+float32_t arm_tan(float32_t x){
+    return arm_sin_f32(x) / arm_cos_f32(x);
+}
+
 float32_t arm_sin2(float32_t x){
     return pow(arm_sin_f32(x), 2);
 }
