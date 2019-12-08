@@ -42,7 +42,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-extern uint8_t block_counter;
+extern uint16_t block_counter;
 extern uint8_t block_ready;
 extern uint16_t* input_buffer;
 extern uint16_t* hidden_buffer;
@@ -94,7 +94,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 #define PWR_REGULATOR_VOLTAGE_SCALE0  ((uint32_t)0x00000000)
 // #define BLOCK_SIZE 16
-#define BLOCK_SIZE 64
+// #define BLOCK_SIZE 64
+#define BLOCK_SIZE 512
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
 #define ADC_RESOLUTION 16

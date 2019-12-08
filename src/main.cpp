@@ -52,7 +52,7 @@
 
 /* USER CODE BEGIN PV */
 // Global flags
-uint8_t block_counter = 0;
+uint16_t block_counter = 0;
 uint8_t block_ready = 0;
 
 // Allosation in different parts of memory
