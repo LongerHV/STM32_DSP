@@ -57,6 +57,89 @@ void Biquad::RecalculateCoeffitients() {
             b1 = 2 * (K * K - 1) * norm;
             b2 = (1 - K / Q + K * K) * norm;
             break;
+
+        case HIGHPASS:
+            norm = 1 / (1 + K / Q + K * K);
+            a0 = norm;
+            a1 = -2 * a0;
+            a2 = a0;
+            b1 = 2 * (K * K - 1) * norm;
+            b2 = (1 - K / Q + K * K) * norm;
+            break;
+
+        case BANDPASS:
+            norm = 1 / (1 + K / Q + K * K);
+            a0 = K / Q * norm;
+            a1 = 0;
+            a2 = -a0;
+            b1 = 2 * (K * K - 1) * norm;
+            b2 = (1 - K / Q + K * K) * norm;
+            break;
+        
+        case NOTCH:
+            norm = 1 / (1 + K / Q + K * K);
+            a0 = (1 + K * K) * norm;
+            a1 = 2 * (K * K - 1) * norm;
+            a2 = a0;
+            b1 = a1;
+            b2 = (1 - K / Q + K * K) * norm;
+            break;
+        
+        case PEAK:
+            if (peak_gain >= 0) {    // boost
+                norm = 1 / (1 + 1/Q * K + K * K);
+                a0 = (1 + V/Q * K + K * K) * norm;
+                a1 = 2 * (K * K - 1) * norm;
+                a2 = (1 - V/Q * K + K * K) * norm;
+                b1 = a1;
+                b2 = (1 - 1/Q * K + K * K) * norm;
+            }
+            else {    // cut
+                norm = 1 / (1 + V/Q * K + K * K);
+                a0 = (1 + 1/Q * K + K * K) * norm;
+                a1 = 2 * (K * K - 1) * norm;
+                a2 = (1 - 1/Q * K + K * K) * norm;
+                b1 = a1;
+                b2 = (1 - V/Q * K + K * K) * norm;
+            }
+            break;
+        case LOWSHELF:
+            if (peak_gain >= 0) {    // boost
+                norm = 1 / (1 + sqrt(2) * K + K * K);
+                a0 = (1 + sqrt(2*V) * K + V * K * K) * norm;
+                a1 = 2 * (V * K * K - 1) * norm;
+                a2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
+                b1 = 2 * (K * K - 1) * norm;
+                b2 = (1 - sqrt(2) * K + K * K) * norm;
+            }
+            else {    // cut
+                norm = 1 / (1 + sqrt(2*V) * K + V * K * K);
+                a0 = (1 + sqrt(2) * K + K * K) * norm;
+                a1 = 2 * (K * K - 1) * norm;
+                a2 = (1 - sqrt(2) * K + K * K) * norm;
+                b1 = 2 * (V * K * K - 1) * norm;
+                b2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
+            }
+            break;
+        case HIGHSHELF:
+            if (peak_gain >= 0) {    // boost
+                norm = 1 / (1 + sqrt(2) * K + K * K);
+                a0 = (V + sqrt(2*V) * K + K * K) * norm;
+                a1 = 2 * (K * K - V) * norm;
+                a2 = (V - sqrt(2*V) * K + K * K) * norm;
+                b1 = 2 * (K * K - 1) * norm;
+                b2 = (1 - sqrt(2) * K + K * K) * norm;
+            }
+            else {    // cut
+                norm = 1 / (V + sqrt(2*V) * K + K * K);
+                a0 = (1 + sqrt(2) * K + K * K) * norm;
+                a1 = 2 * (K * K - 1) * norm;
+                a2 = (1 - sqrt(2) * K + K * K) * norm;
+                b1 = 2 * (K * K - V) * norm;
+                b2 = (V - sqrt(2*V) * K + K * K) * norm;
+            }
+            break;
+
         default:
             break;
     }
