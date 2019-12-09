@@ -21,7 +21,7 @@ class Modulation : public Effect {
     float32_t feedback;
     float32_t depth;
     float32_t rate;
-    uint32_t delay;
+    float32_t delay_time;
 
     // variables
     DelayBlock *left_delay;
@@ -34,6 +34,7 @@ class Modulation : public Effect {
     Modulation(const char *name, DelayBlock *left_delay, DelayBlock *right_delay);
     ~Modulation();
     void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
+    void UpdateParameters();
     float32_t GetLFO();
 };
 

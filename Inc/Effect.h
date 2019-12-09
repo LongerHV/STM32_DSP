@@ -21,6 +21,7 @@ class Effect {
     Effect();
     ~Effect();
     virtual void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) = 0;
+    virtual void UpdateParameters() = 0;
     char *GetName();
     char *GetParamName(int8_t param_id);
     char *GetParamValRepr(int8_t param_id);

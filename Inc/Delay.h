@@ -11,6 +11,7 @@ class Delay : public Effect {
    private:
     DelayBlock *delay_left;
     DelayBlock *delay_right;
+    float32_t delay_time;
     float32_t feedback;
     float32_t dry_level;
     float32_t wet_level;
@@ -19,6 +20,7 @@ class Delay : public Effect {
     Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right);
     ~Delay();
     void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
+    void UpdateParameters();
 };
 
 #endif

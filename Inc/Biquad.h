@@ -18,14 +18,14 @@ class Biquad : public Effect {
    private:
     arm_biquad_cascade_df2T_instance_f32 *filter_instance_L;
     arm_biquad_cascade_df2T_instance_f32 *filter_instance_R;
-    float32_t Fs, Fc, Q, peak_gain;
-    uint32_t type;
+    float32_t Fs, Fc, Q, peak_gain, type;
 
    public:
     Biquad(const char *name);
     ~Biquad();
     void RecalculateCoeffitients();
     void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
+    void UpdateParameters();
 };
 
 #endif

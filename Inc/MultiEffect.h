@@ -29,10 +29,12 @@ class MultiEffect {
     MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tft_spi);
     void ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size);
     void UpdateUI();
-    uint8_t UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max);
+    float32_t UpdateEncoder(TIM_HandleTypeDef *htim, float32_t var, float32_t min, float32_t max, float32_t step);
     uint8_t UpdateEncoder(TIM_HandleTypeDef *htim);
     void DisplayPop();
     void AddEffect(Effect *pNew);
+
+
 };
 
 #endif

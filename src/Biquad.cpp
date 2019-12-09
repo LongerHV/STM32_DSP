@@ -23,12 +23,13 @@ Biquad::Biquad(const char *name) {
     this->Fs = 48000;
     this->type = 0;
 
-    this->parameters[0] = new Parameter_uint32("Type", &this->type, 100);
-    this->parameters[1] = new Parameter_float32("Frequency", &this->Fc, 20000);
-    this->parameters[2] = new Parameter_float32("Q", &this->Q, 5);
-    this->parameters[3] = new Parameter_float32("Peak gain", &this->peak_gain, 2);
+    this->parameters[0] = new Parameter("Type", " ", &this->type, 0, 6, 1, 0);
+    this->parameters[1] = new Parameter("Frequency", "", &this->Fc, 100, 20000, 100, 10000);
+    this->parameters[2] = new Parameter("Q", "", &this->Q, 0.1, 5.0, 0.1, 1.0);
+    this->parameters[3] = new Parameter("Peak gain", "", &this->peak_gain, 1, 2, 0.1, 1);
     for (uint8_t i = 4; i < 10; i++) parameters[i] = NULL;
 
+    this->UpdateParameters();
     this->RecalculateCoeffitients();
 }
 
@@ -36,19 +37,18 @@ Biquad::~Biquad() {
 }
 
 void Biquad::RecalculateCoeffitients() {
-    this->type = 0;
-    this->Q = 1;
-    this->Fc = 10000;
-
+    uint8_t type = (uint8_t)this->type;
     float32_t K = arm_tan(PI * this->Fc / this->Fs);
     float32_t V;
     float32_t norm;
     float32_t a0, a1, a2, b1, b2;
-    if (this->type > HIGHSHELF)
-        this->type = HIGHSHELF;
-    if (this->type == PEAK || this->type == LOWSHELF || this->type == HIGHSHELF)
-        V = pow(10, fabs(this->peak_gain / 20));
-    switch (this->type) {
+
+    if (type > HIGHSHELF)
+        type = HIGHSHELF;
+    if (type == PEAK || type == LOWSHELF || type == HIGHSHELF)
+        V = pow(10, fabs(peak_gain / 20));
+
+    switch (type) {
         case LOWPASS:
             norm = 1 / (1 + K / Q + K * K);
             a0 = K * K * norm;
@@ -159,4 +159,13 @@ void Biquad::RecalculateCoeffitients() {
 void Biquad::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) {
     arm_biquad_cascade_df2T_f32(this->filter_instance_L, pData_left, pData_left, block_size);
     arm_biquad_cascade_df2T_f32(this->filter_instance_R, pData_right, pData_right, block_size);
+}
+
+void Biquad::UpdateParameters(){
+    this->type = this->parameters[0]->GetValue();
+    this->Fc = this->parameters[1]->GetValue();
+    this->Q = this->parameters[2]->GetValue();
+    this->peak_gain = this->parameters[3]->GetValue();
+
+    this->RecalculateCoeffitients();
 }
