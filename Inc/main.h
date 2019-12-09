@@ -96,6 +96,7 @@ void Error_Handler(void);
 // #define BLOCK_SIZE 16
 // #define BLOCK_SIZE 64
 #define BLOCK_SIZE 512
+#define SAMPLING_RATE 48000
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
 #define ADC_RESOLUTION 16
