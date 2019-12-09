@@ -59,6 +59,7 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
 
 void Delay::UpdateParameters() {
     this->delay_left->offset = this->parameters[0]->GetValue() * SAMPLING_RATE * 0.001;
+    this->delay_right->offset = this->parameters[0]->GetValue() * SAMPLING_RATE * 0.001;
     this->feedback = this->parameters[1]->GetValue() * 0.01;
     this->dry_level = this->parameters[2]->GetValue() * 0.01;
     this->wet_level = this->parameters[3]->GetValue() * 0.01;
