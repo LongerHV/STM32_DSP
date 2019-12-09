@@ -4,7 +4,7 @@
 #include "arm_math.h"
 #include "main.h"
 
-float32_t arm_atg(float32_t x);
+float32_t arm_ctg(float32_t x);
 float32_t arm_tan(float32_t x);
 float32_t arm_sin2(float32_t x);
 
