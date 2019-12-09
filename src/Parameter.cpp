@@ -73,17 +73,17 @@ void Parameter::UpdateValRepr() {
         a = this->value;
         point = 0;
     } else if (this->unit[0] == 'H' && this->unit[1] == 'z') {
-        if (this->max > 10){
+        if (this->name[0] == 'F'){
             a = this->value;
             point = 0;
         } else {
             a = this->value * 0.001;
-            b = (this->value % 1000) * 0.001;
+            b = (this->value % 1000) * 0.01;
             point = 1;
         }
     } else {
         a = this->value * 0.001;
-        b = (this->value % 1000) * 0.001;
+        b = (this->value % 1000) * 0.01;
         point = 1;
     }
 
