@@ -7,10 +7,10 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right) 
     this->number_of_parameters = 4;
     this->current_parameter = 0;
 
-    this->parameters[0] = new Parameter("Time", "s", &this->delay_time, 0.0f, 1.0f, 0.05f, 0.5f);
-    this->parameters[1] = new Parameter("Feedback", "", &this->feedback, 0.0f, 1.0f, 0.05f, 0.75f);
-    this->parameters[2] = new Parameter("Dry level", "", &this->dry_level, 0.0f, 1.0f, 0.05f, 0.8f);
-    this->parameters[3] = new Parameter("Wet level", "", &this->wet_level, 0.0f, 1.0f, 0.05f, 0.5f);
+    this->parameters[0] = new Parameter("Time", "s", 100, 1000, 50, 500);
+    this->parameters[1] = new Parameter("Feedback", "%", 0, 100, 5, 75);
+    this->parameters[2] = new Parameter("Dry level", "%", 0, 100, 5, 80);
+    this->parameters[3] = new Parameter("Wet level", "%", 0, 100, 5, 50);
     for (uint8_t i = 4; i < 10; i++) parameters[i] = NULL;
 
     this->UpdateParameters();
@@ -58,8 +58,8 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
 }
 
 void Delay::UpdateParameters() {
-    this->delay_left->offset = this->parameters[0]->GetValue() * SAMPLING_RATE;
-    this->feedback = this->parameters[1]->GetValue();
-    this->dry_level = this->parameters[2]->GetValue();
-    this->wet_level = this->parameters[3]->GetValue();
+    this->delay_left->offset = this->parameters[0]->GetValue() * SAMPLING_RATE * 0.001;
+    this->feedback = this->parameters[1]->GetValue() * 0.01;
+    this->dry_level = this->parameters[2]->GetValue() * 0.01;
+    this->wet_level = this->parameters[3]->GetValue() * 0.01;
 }

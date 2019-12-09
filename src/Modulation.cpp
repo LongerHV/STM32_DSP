@@ -8,12 +8,12 @@ Modulation::Modulation(const char *name, DelayBlock *left_delay, DelayBlock *rig
 
     this->number_of_parameters = 6;
     this->current_parameter = 0;
-    this->parameters[0] = new Parameter("Rate", "Hz", &this->rate, 0.5f, 10.0f, 0.1f, 1.0f);
-    this->parameters[1] = new Parameter("Depth", "%", &this->depth, 0.0f, 100.0f, 5.0f, 25.0f);
-    this->parameters[2] = new Parameter("Delay", "ms", &this->delay_time, 1.0f, 30.0f, 1.0f, 10.0f);
-    this->parameters[3] = new Parameter("Feedback", "", &this->feedback, 0.0f, 1.0f, 0.1, 0.25f);
-    this->parameters[4] = new Parameter("Dry level", "", &this->dry_level, 0.0f, 1.0f, 0.1f, 0.8f);
-    this->parameters[5] = new Parameter("Wet level", "", &this->wet_level, 0.0f, 1.0f, 0.1f, 0.8f);
+    this->parameters[0] = new Parameter("Rate", "Hz", 500, 10000, 100, 1000);
+    this->parameters[1] = new Parameter("Depth", "%", 0, 100, 5, 25);
+    this->parameters[2] = new Parameter("Delay", "ms", 1, 30, 1, 10);
+    this->parameters[3] = new Parameter("Feedback", "%", 0, 100, 5, 25);
+    this->parameters[4] = new Parameter("Dry level", "%", 0, 100, 5, 80);
+    this->parameters[5] = new Parameter("Wet level", "%", 0, 100, 5, 80);
     for (uint8_t i = 6; i < 10; i++) parameters[i] = NULL;
 
     this->UpdateParameters();
