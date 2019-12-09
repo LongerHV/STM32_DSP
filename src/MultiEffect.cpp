@@ -106,7 +106,10 @@ void MultiEffect::UpdateUI() {
         }
         // Change parameter
     } else if (this->param_flag) {
-        if (this->UpdateEncoder(this->htim, &this->current_effect->current_parameter, 0, this->current_effect->number_of_parameters - 1)) {
+        uint8_t value_old = this->current_effect->current_parameter;
+        uint8_t value_new = this->UpdateEncoder(this->htim, value_old, 0, this->current_effect->number_of_parameters - 1, 1);
+        if (value_old != value_new) {
+            this->current_effect->current_parameter = value_new;
             for (uint8_t i = 0; i < this->current_effect->number_of_parameters; i++) {
                 if (i == this->current_effect->current_parameter) {
                     this->my_disp->PushChar(4 + i, 0, '>', WHITE);
@@ -117,33 +120,37 @@ void MultiEffect::UpdateUI() {
         }
         // Modify parameter value
     } else if (this->val_flag) {
-        if (this->UpdateEncoder(this->htim, this->current_effect->GetCurrentParam()->GetValuePtr(), 0, 100)) {
+        float32_t min, max, step, value_old, value_new;
+        min = this->current_effect->GetCurrentParam()->GetMin();
+        max = this->current_effect->GetCurrentParam()->GetMax();
+        step = this->current_effect->GetCurrentParam()->GetStep();
+        value_old = this->current_effect->GetCurrentParam()->GetValue();
+        value_new = this->UpdateEncoder(this->htim, value_old, min, max, step);
+        if (value_old != value_new) {
+            this->current_effect->GetCurrentParam()->SetValue(value_new);
             this->current_effect->GetCurrentParam()->UpdateValRepr();
-            this->current_effect->GetCurrentParam()->UpdateValue();
+            this->current_effect->UpdateParameters();
+            // this->current_effect->GetCurrentParam()->UpdateValue();
             this->my_disp->PushString(4 + this->current_effect->current_parameter, 12, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
         }
     }
 }
 
-uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim, int8_t *var, uint8_t min, uint8_t max) {
+float32_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim, float32_t var, float32_t min, float32_t max, float32_t step) {
     uint16_t current = htim->Instance->CNT;
     int tim_diff = current - this->last_tim_cnt;
-    uint8_t ret_val = 0;
     if (tim_diff >= 4 || tim_diff <= -4) {
-        ret_val = 1;
         tim_diff /= 4;
-        *var -= (int8_t)tim_diff;
-        if (*var > max) {
-            *var = max;
-            ret_val = 0;
+        var -= (int8_t)tim_diff * step;
+        if (var > max) {
+            var = max;
         }
-        if (*var < min) {
-            *var = min;
-            ret_val = 0;
+        if (var < min) {
+            var = min;
         }
         this->last_tim_cnt = current;
     }
-    return ret_val;
+    return var;
 }
 
 uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim) {
