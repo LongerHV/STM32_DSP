@@ -18,8 +18,8 @@ MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tf
     this->my_disp->PushString(0, 0, this->current_effect->GetName(), WHITE);
     for (int8_t i = 0; i < this->current_effect->number_of_parameters; i++) {
         this->my_disp->PushString(4 + i, 1, this->current_effect->GetParamName(i), WHITE);
-        this->my_disp->PushChar(4 + i, 11, ':', WHITE);
-        this->my_disp->PushString(4 + i, 12, this->current_effect->GetParamValRepr(i), WHITE);
+        this->my_disp->PushChar(4 + i, 10, ':', WHITE);
+        this->my_disp->PushString(4 + i, 11, this->current_effect->GetParamValRepr(i), WHITE);
     }
     this->my_disp->PushChar(4, 0, '>', WHITE);
 
@@ -75,8 +75,8 @@ void MultiEffect::UpdateUI() {
         }
         my_disp->PushChar(4 + current_effect->current_parameter, 0, '>', colour);
         my_disp->PushString(4 + current_effect->current_parameter, 1, current_effect->GetCurrentParam()->GetName(), colour);
-        my_disp->PushChar(4 + current_effect->current_parameter, 11, ':', colour);
-        my_disp->PushString(4 + current_effect->current_parameter, 12, current_effect->GetCurrentParam()->GetValRepr(), colour);
+        my_disp->PushChar(4 + current_effect->current_parameter, 10, ':', colour);
+        my_disp->PushString(4 + current_effect->current_parameter, 11, current_effect->GetCurrentParam()->GetValRepr(), colour);
 
         this->val_flag = this->param_flag;
         this->param_flag = !this->param_flag;
@@ -90,8 +90,8 @@ void MultiEffect::UpdateUI() {
             my_disp->PushString(0, 0, this->current_effect->GetName(), WHITE);
             for (i = 0; i < this->current_effect->number_of_parameters; i++) {
                 this->my_disp->PushString(4 + i, 1, this->current_effect->GetParamName(i), WHITE);
-                this->my_disp->PushChar(4 + i, 11, ':', WHITE);
-                this->my_disp->PushString(4 + i, 12, this->current_effect->GetParamValRepr(i), WHITE);
+                this->my_disp->PushChar(4 + i, 10, ':', WHITE);
+                this->my_disp->PushString(4 + i, 11, this->current_effect->GetParamValRepr(i), WHITE);
                 if (i == this->current_effect->current_parameter) {
                     this->my_disp->PushChar(4 + i, 0, '>', WHITE);
                 } else {
@@ -99,7 +99,7 @@ void MultiEffect::UpdateUI() {
                 }
             }
             for (; i < 10; i++) {
-                this->my_disp->PushString(4 + i, 0, "                ", WHITE);
+                this->my_disp->PushString(4 + i, 0, "               ", WHITE);
             }
             this->param_flag = 1;
             this->val_flag = 0;
@@ -131,7 +131,7 @@ void MultiEffect::UpdateUI() {
             this->current_effect->GetCurrentParam()->UpdateValRepr();
             this->current_effect->UpdateParameters();
             // this->current_effect->GetCurrentParam()->UpdateValue();
-            this->my_disp->PushString(4 + this->current_effect->current_parameter, 12, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
+            this->my_disp->PushString(4 + this->current_effect->current_parameter, 11, this->current_effect->GetCurrentParam()->GetValRepr(), GREEN);
         }
     }
 }

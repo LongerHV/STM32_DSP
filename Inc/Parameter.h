@@ -6,7 +6,7 @@
 
 class Parameter {
    private:
-    char name[11];
+    char name[10];
     char val_repr[6];
     char unit[3];
     int32_t value, min, max, step;

@@ -13,13 +13,13 @@ Parameter::Parameter(const char *name, const char *unit, int32_t min, int32_t ma
 
 void Parameter::SetName(const char *name){
     uint8_t i;
-    for (i = 0; name[i] != '\000' && i < 10; i++) {
+    for (i = 0; name[i] != '\000' && i < 9; i++) {
         this->name[i] = name[i];
     }
-    for (; i < 10; i++) {
+    for (; i < 9; i++) {
         this->name[i] = ' ';
     }
-    this->name[10] = '\000';
+    this->name[9] = '\000';
 }
 
 void Parameter::SetUnit(const char *unit) {
@@ -57,39 +57,49 @@ void Parameter::SetValue(int32_t value) {
 }
 
 void Parameter::UpdateValRepr() {
-    int a, b;
-    uint8_t point;
+    int a, b = 0;
+    char prefix = '\000';
     if(this->unit[0] == 's'){
-        a = this->value == 1000;
-        b = (this->value % 1000) * 0.1;
-        point = 1;
-    } else if (this->unit[0] == '%') {
-        a = this->value;
-        point = 0;
-    } else if (this->unit[0] == ' ') {
-        a = this->value;
-        point = 0;
-    } else if (this->unit[0] == 'm' && this->unit[1] == 's') {
-        a = this->value;
-        point = 0;
+        if (this->value >= 1000){
+            a = this->value == 1000;
+            b = (this->value % 1000) * 0.1;
+        } else {
+            a = this->value;
+            prefix = 'm';
+        }
     } else if (this->unit[0] == 'H' && this->unit[1] == 'z') {
         if (this->name[0] == 'F'){
-            a = this->value;
-            point = 0;
+            if (this->value < 1000){
+                a = this->value;
+            } else {
+                a = this->value * 0.001;
+                b = this->value % 1000 * 0.01;
+                prefix = 'k';
+            }
         } else {
             a = this->value * 0.001;
             b = (this->value % 1000) * 0.01;
-            point = 1;
         }
+    } else if (this->unit[0] == '%') {
+        a = this->value;
+    } else if (this->unit[0] == ' ') {
+        a = this->value;
     } else {
         a = this->value * 0.001;
         b = (this->value % 1000) * 0.01;
-        point = 1;
     }
 
-    if(point){
-        snprintf(this->val_repr, 6, "%d.%d%s   ", a, b, this->unit);
+    if(b){
+        if(prefix){
+            snprintf(this->val_repr, 6, "%d.%d%c%s  ", a, b, prefix, this->unit);
+        } else {
+            snprintf(this->val_repr, 6, "%d.%d%s   ", a, b, this->unit);
+        }
     } else {
-        snprintf(this->val_repr, 6, "%d%s     ", a, this->unit);
+        if(prefix) {
+            snprintf(this->val_repr, 6, "%d%c%s    ", a, prefix, this->unit);
+        } else {
+            snprintf(this->val_repr, 6, "%d%s     ", a, this->unit);
+        }
     }
 }

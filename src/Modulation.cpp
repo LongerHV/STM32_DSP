@@ -10,7 +10,7 @@ Modulation::Modulation(const char *name, DelayBlock *left_delay, DelayBlock *rig
     this->current_parameter = 0;
     this->parameters[0] = new Parameter("Rate", "Hz", 500, 10000, 100, 1000);
     this->parameters[1] = new Parameter("Depth", "%", 0, 100, 5, 25);
-    this->parameters[2] = new Parameter("Delay", "ms", 1, 30, 1, 10);
+    this->parameters[2] = new Parameter("Delay", "s", 1, 30, 1, 10);
     this->parameters[3] = new Parameter("Feedback", "%", 0, 100, 5, 25);
     this->parameters[4] = new Parameter("Dry level", "%", 0, 100, 5, 80);
     this->parameters[5] = new Parameter("Wet level", "%", 0, 100, 5, 80);
