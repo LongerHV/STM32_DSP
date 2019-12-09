@@ -1,22 +1,31 @@
 #include "Parameter.h"
+#include "stdio.h"
 
-Parameter::Parameter() {
+Parameter::Parameter(const char *name, const char *unit, int32_t min, int32_t max, int32_t step, int32_t initial) {
+    this->SetName(name);
+    this->SetUnit(unit);
+    this->min = min;
+    this->max = max;
+    this->step = step;
+    this->value = initial;
+    this->UpdateValRepr();
 }
 
 void Parameter::SetName(const char *name){
     uint8_t i;
-    for (i = 0; name[i] != '\000' && i < 10; i++) {
+    for (i = 0; name[i] != '\000' && i < 9; i++) {
         this->name[i] = name[i];
     }
-    for (; i < 10; i++) {
+    for (; i < 9; i++) {
         this->name[i] = ' ';
     }
-    this->name[10] = '\000';
-    this->UpdateValRepr();
+    this->name[9] = '\000';
 }
 
-void Parameter::SetValue(uint8_t value){
-    this->value = value;
+void Parameter::SetUnit(const char *unit) {
+    for(uint8_t i = 0; i < 3; i++) {
+        this->unit[i] = unit[i];
+    }
 }
 
 char *Parameter::GetName() {
@@ -27,63 +36,70 @@ char *Parameter::GetValRepr() {
     return &this->val_repr[0];
 }
 
-int8_t Parameter::GetValue() {
+int32_t Parameter::GetValue() {
     return this->value;
 }
 
-int8_t *Parameter::GetValuePtr() {
-    return &this->value;
+int32_t Parameter::GetMin() {
+    return this->min;
+}
+
+int32_t Parameter::GetMax() {
+    return this->max;
+}
+
+int32_t Parameter::GetStep() {
+    return this->step;
+}
+
+void Parameter::SetValue(int32_t value) {
+    this->value = value;
 }
 
 void Parameter::UpdateValRepr() {
-    if (this->value < 10) {
-        this->val_repr[0] = ' ';
-        this->val_repr[1] = ' ';
-        this->val_repr[2] = (char)((this->value % 10) + 48);
-        this->val_repr[3] = '%';
-        this->val_repr[4] = '\000';
-    } else if (this->value < 100) {
-        this->val_repr[0] = ' ';
-        this->val_repr[1] = (char)((this->value % 100) / 10 + 48);
-        this->val_repr[2] = (char)((this->value % 10) + 48);
-        this->val_repr[3] = '%';
-        this->val_repr[4] = '\000';
-    } else if (this->value == 100) {
-        this->val_repr[0] = '1';
-        this->val_repr[1] = '0';
-        this->val_repr[2] = '0';
-        this->val_repr[3] = '%';
-        this->val_repr[4] = '\000';
+    int a, b = 0;
+    char prefix = '\000';
+    if(this->unit[0] == 's'){
+        if (this->value >= 1000){
+            a = this->value == 1000;
+            b = (this->value % 1000) * 0.1;
+        } else {
+            a = this->value;
+            prefix = 'm';
+        }
+    } else if (this->unit[0] == 'H' && this->unit[1] == 'z') {
+        if (this->name[0] == 'F'){
+            if (this->value < 1000){
+                a = this->value;
+            } else {
+                a = this->value * 0.001;
+                b = this->value % 1000 * 0.01;
+                prefix = 'k';
+            }
+        } else {
+            a = this->value * 0.001;
+            b = (this->value % 1000) * 0.01;
+        }
+    } else if (this->unit[0] == '%') {
+        a = this->value;
+    } else if (this->unit[0] == ' ') {
+        a = this->value;
+    } else {
+        a = this->value * 0.001;
+        b = (this->value % 1000) * 0.01;
     }
-}
 
-Parameter_float32::Parameter_float32(const char *name, float32_t *pValue, float32_t max_value) {
-    this->SetValue(50);
-    this->SetName(name);
-    this->pValue = pValue;
-    this->max_value = max_value;
-    this->UpdateValue();
-}
-
-Parameter_float32::~Parameter_float32(){
-}
-
-void Parameter_float32::UpdateValue(){
-    *this->pValue = (float32_t)this->GetValue() * 0.01 * this->max_value; 
-}
-
-Parameter_uint32::Parameter_uint32(const char *name, uint32_t *pValue, uint32_t max_value) {
-    this->SetValue(50);
-    this->SetName(name);
-    this->pValue = pValue;
-    this->max_value = max_value;
-    this->UpdateValue();
-}
-
-Parameter_uint32::~Parameter_uint32(){
-
-}
-
-void Parameter_uint32::UpdateValue(){
-    *this->pValue = (uint32_t)((float32_t)this->GetValue() * 0.01 * (float32_t)this->max_value); 
+    if(b){
+        if(prefix){
+            snprintf(this->val_repr, 6, "%d.%d%c%s  ", a, b, prefix, this->unit);
+        } else {
+            snprintf(this->val_repr, 6, "%d.%d%s   ", a, b, this->unit);
+        }
+    } else {
+        if(prefix) {
+            snprintf(this->val_repr, 6, "%d%c%s    ", a, prefix, this->unit);
+        } else {
+            snprintf(this->val_repr, 6, "%d%s     ", a, this->unit);
+        }
+    }
 }

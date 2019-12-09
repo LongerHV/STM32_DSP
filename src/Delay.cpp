@@ -4,15 +4,16 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right) 
     this->SetName(name);
     this->delay_left = delay_left;
     this->delay_right = delay_right;
-    this->number_of_parameters = 5;
+    this->number_of_parameters = 4;
     this->current_parameter = 0;
 
-    this->parameters[0] = new Parameter_uint32("Time left", &this->delay_left->offset, this->delay_left->max_delay);
-    this->parameters[1] = new Parameter_uint32("Time right", &this->delay_right->offset, this->delay_right->max_delay);
-    this->parameters[2] = new Parameter_float32("Feedback", &this->feedback, 1.0);
-    this->parameters[3] = new Parameter_float32("Dry level", &this->dry_level, 1.0);
-    this->parameters[4] = new Parameter_float32("Wet level", &this->wet_level, 1.0);
-    for (uint8_t i = 5; i < 10; i++) parameters[i] = NULL;
+    this->parameters[0] = new Parameter("Time", "s", 100, 1000, 50, 500);
+    this->parameters[1] = new Parameter("Feedback", "%", 0, 100, 5, 75);
+    this->parameters[2] = new Parameter("Dry level", "%", 0, 100, 5, 80);
+    this->parameters[3] = new Parameter("Wet level", "%", 0, 100, 5, 50);
+    for (uint8_t i = 4; i < 10; i++) parameters[i] = NULL;
+
+    this->UpdateParameters();
 }
 
 Delay::~Delay() {
@@ -54,4 +55,12 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
     delete[] temp_float;
     delete[] temp_fixed;
     delete[] feedback_block;
+}
+
+void Delay::UpdateParameters() {
+    this->delay_left->offset = this->parameters[0]->GetValue() * SAMPLING_RATE * 0.001;
+    this->delay_right->offset = this->parameters[0]->GetValue() * SAMPLING_RATE * 0.001;
+    this->feedback = this->parameters[1]->GetValue() * 0.01;
+    this->dry_level = this->parameters[2]->GetValue() * 0.01;
+    this->wet_level = this->parameters[3]->GetValue() * 0.01;
 }

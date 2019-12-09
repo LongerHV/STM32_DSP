@@ -9,9 +9,11 @@
 class VU {
    private:
     Display *my_disp;
-    float32_t rms = 0.0;
-    float32_t rms_sum = 0.0;
-    float32_t rms_sum_prev = 0.0;
+    // float32_t rms = 0.0;
+    // float32_t rms_sum = 0.0;
+    // float32_t rms_sum_prev = 0.0;
+    float32_t peak = 0.0f;
+    float32_t peak_prev = 0.0f;
     uint8_t counter = 0;
     uint8_t origin_y, origin_x;
 
