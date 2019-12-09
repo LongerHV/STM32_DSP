@@ -3,25 +3,25 @@
 
 #include "Effect.h"
 #include "arm_math.h"
-#include "mymath.h"
 #include "main.h"
+#include "mymath.h"
 
-#define LOWPASS (uint8_t) 0
-#define HIGHPASS (uint8_t) 1
-#define BANDPASS (uint8_t) 2
-#define PEAK (uint8_t) 3
-#define NOTCH (uint8_t) 4
-#define LOWSHELF (uint8_t) 5
-#define HIGHSHELF (uint8_t) 6
+#define LOWPASS (uint8_t)0
+#define HIGHPASS (uint8_t)1
+#define BANDPASS (uint8_t)2
+#define PEAK (uint8_t)3
+#define NOTCH (uint8_t)4
+#define LOWSHELF (uint8_t)5
+#define HIGHSHELF (uint8_t)6
 
 class Biquad : public Effect {
-    private:
+   private:
     arm_biquad_cascade_df2T_instance_f32 *filter_instance_L;
     arm_biquad_cascade_df2T_instance_f32 *filter_instance_R;
     float32_t Fs, Fc, Q, peak_gain;
     uint32_t type;
 
-    public:
+   public:
     Biquad(const char *name);
     ~Biquad();
     void RecalculateCoeffitients();

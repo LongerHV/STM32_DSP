@@ -165,12 +165,12 @@ uint8_t MultiEffect::UpdateEncoder(TIM_HandleTypeDef *htim) {
     return ret_val;
 }
 
-void MultiEffect::DisplayPop(){
+void MultiEffect::DisplayPop() {
     this->my_disp->Pop();
 }
 
-void MultiEffect::AddEffect(Effect *pNew){
-    if(this->pHead == NULL && this->pTail == NULL){
+void MultiEffect::AddEffect(Effect *pNew) {
+    if (this->pHead == NULL && this->pTail == NULL) {
         this->pHead = pNew;
         this->pTail = this->pHead;
         this->pHead->pPrev = this->pTail->pNext = NULL;

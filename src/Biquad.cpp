@@ -1,6 +1,6 @@
 #include "Biquad.h"
 
-Biquad::Biquad(const char *name){
+Biquad::Biquad(const char *name) {
     this->SetName(name);
 
     this->filter_instance_L = new arm_biquad_cascade_df2T_instance_f32;
@@ -32,11 +32,10 @@ Biquad::Biquad(const char *name){
     this->RecalculateCoeffitients();
 }
 
-Biquad::~Biquad(){
-
+Biquad::~Biquad() {
 }
 
-void Biquad::RecalculateCoeffitients(){
+void Biquad::RecalculateCoeffitients() {
     this->type = 0;
     this->Q = 1;
     this->Fc = 10000;
@@ -45,11 +44,11 @@ void Biquad::RecalculateCoeffitients(){
     float32_t V;
     float32_t norm;
     float32_t a0, a1, a2, b1, b2;
-    if(this->type > HIGHSHELF)
+    if (this->type > HIGHSHELF)
         this->type = HIGHSHELF;
-    if(this->type == PEAK || this->type == LOWSHELF || this->type == HIGHSHELF)
+    if (this->type == PEAK || this->type == LOWSHELF || this->type == HIGHSHELF)
         V = pow(10, fabs(this->peak_gain / 20));
-    switch(this->type) {
+    switch (this->type) {
         case LOWPASS:
             norm = 1 / (1 + K / Q + K * K);
             a0 = K * K * norm;
@@ -62,19 +61,19 @@ void Biquad::RecalculateCoeffitients(){
             break;
     }
     this->filter_instance_L->pCoeffs[0] = a0;
-    this->filter_instance_L->pCoeffs[1] = b1; 
+    this->filter_instance_L->pCoeffs[1] = b1;
     this->filter_instance_L->pCoeffs[2] = b2;
     this->filter_instance_L->pCoeffs[3] = a1;
     this->filter_instance_L->pCoeffs[4] = a2;
 
     this->filter_instance_R->pCoeffs[0] = a0;
-    this->filter_instance_R->pCoeffs[1] = b1; 
+    this->filter_instance_R->pCoeffs[1] = b1;
     this->filter_instance_R->pCoeffs[2] = b2;
     this->filter_instance_R->pCoeffs[3] = a1;
     this->filter_instance_R->pCoeffs[4] = a2;
 }
 
-void Biquad::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size){
+void Biquad::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) {
     arm_biquad_cascade_df2T_f32(this->filter_instance_L, pData_left, pData_left, block_size);
     arm_biquad_cascade_df2T_f32(this->filter_instance_R, pData_right, pData_right, block_size);
 }
