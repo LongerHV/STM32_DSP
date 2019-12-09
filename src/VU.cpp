@@ -7,25 +7,31 @@ VU::VU(uint8_t origin_y, uint8_t origin_x, Display *disp) {
 }
 
 void VU::Update(float32_t *data, uint32_t block_size) {
-    uint16_t colour;
-    arm_rms_f32(data, block_size, &this->rms);
-    this->rms_sum += this->rms;
+    float32_t max, min;
+    uint32_t dummy;
+    arm_max_f32(data, block_size, &max, &dummy);
+    arm_min_f32(data, block_size, &min, &dummy);
+    if (max > this->peak) 
+        this->peak = max;
+    if (-min > this->peak)
+        this->peak = -min;
     if (this->counter++ >= 4) {
-        this->rms_sum *= 12;
-        if (this->rms_sum < this->rms_sum_prev) this->rms_sum = 0.95 * this->rms_sum_prev;
-        this->rms_sum_prev = this->rms_sum;
+        uint16_t colour;
+        this->peak *= 40;
+        if (this->peak < this->peak_prev) this->peak = 0.95 * this->peak_prev;
+        this->peak_prev = this->peak;
 
         for (uint8_t i = 0; i < 5; i++) {
             colour = i < 3 ? GREEN : (i == 3 ? YELLOW : RED);
-            if (this->rms_sum >= 8) {
+            if (this->peak >= 8) {
                 this->my_disp->PushChar(this->origin_y - i, this->origin_x, 0x0012, colour);
-                this->rms_sum -= 8;
+                this->peak -= 8;
             } else {
-                this->my_disp->PushChar(this->origin_y - i, this->origin_x, 0x000A + ((uint8_t)this->rms_sum <= 8 ? (uint8_t)(this->rms_sum) : 8), colour);
-                this->rms_sum = 0.0;
+                this->my_disp->PushChar(this->origin_y - i, this->origin_x, 0x000A + ((uint8_t)this->peak <= 8 ? (uint8_t)(this->peak) : 8), colour);
+                this->peak = 0.0;
             }
         }
-        this->rms_sum = 0.0;
+        this->peak = 0.0;
         this->counter = 0;
     }
 }
