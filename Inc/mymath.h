@@ -4,6 +4,8 @@
 #include "arm_math.h"
 #include "main.h"
 
+#define ONE_OVER_PI (1 / PI)
+
 float32_t arm_ctg(float32_t x);
 float32_t arm_tan(float32_t x);
 float32_t arm_sin2(float32_t x);
