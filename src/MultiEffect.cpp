@@ -3,6 +3,7 @@
 #include "Delay.h"
 #include "DelayBlock.h"
 #include "Modulation.h"
+#include "Drive.h"
 #include "main.h"
 
 MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tft_spi) {
@@ -48,6 +49,9 @@ void MultiEffect::InitializeEffects() {
     this->AddEffect(pNew);
 
     pNew = new Biquad("Biquad");
+    this->AddEffect(pNew);
+
+    pNew = new Drive("Drive");
     this->AddEffect(pNew);
 
     this->current_effect = this->pHead;

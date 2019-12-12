@@ -180,6 +180,8 @@ void Display::UpdateChar(uint8_t Y, uint8_t X, char c, uint16_t colour) {
             }
         }
     }
+
+    SCB_CleanDCache_by_Addr((uint32_t *)pBuffer, 160);
     this->SetRect(8 * Y, 8 * X, 8 * Y + 7, 8 * X + 7);
     this->SendCommand(RAMWR);
     this->SendDataDMA(this->pBuffer, 128);

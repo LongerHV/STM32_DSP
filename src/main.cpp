@@ -40,7 +40,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define AXI_SRAM_D1 __attribute__((section(".axi_sram_d1")))
+#define AHB_SRAM_D2 __attribute__((section(".ahb_sram_d2")))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,13 +56,13 @@
 uint16_t block_counter = 0;
 uint8_t block_ready = 0;
 
-// Allosation in different parts of memory
-uint8_t __attribute__((section(".ahb_sram_d2"))) character_buffer[128];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer1[DELAY_SIZE];
-q15_t __attribute__((section(".axi_sram_d1"))) delay_buffer2[DELAY_SIZE];
-q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer1[MODULATION_DELAY_SIZE];
-q15_t __attribute__((section(".axi_sram_d1"))) mod_buffer2[MODULATION_DELAY_SIZE];
-uint32_t __attribute__((section(".ahb_sram_d2"))) input_sample[2];
+// Allocation in different parts of memory
+q15_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
+q15_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
+q15_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
+q15_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
+uint32_t AHB_SRAM_D2 input_sample[8];
+uint8_t AHB_SRAM_D2 character_buffer[128];
 
 // Defining global buffers
 uint16_t buffer[6][BLOCK_SIZE];
@@ -95,6 +96,7 @@ int main(void) {
 
     /* Enable I-Cache---------------------------------------------------------*/
     SCB_EnableICache();
+    SCB_EnableDCache();
 
     /* MCU
      * Configuration--------------------------------------------------------*/
