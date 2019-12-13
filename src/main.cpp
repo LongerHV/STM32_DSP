@@ -152,7 +152,7 @@ int main(void) {
     MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
     // Declaration of data buffer 
-    float data[2][BLOCK_SIZE];
+    float32_t data[2][BLOCK_SIZE];
 
     // HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
     // HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
@@ -163,23 +163,26 @@ int main(void) {
     while (true) {
         if (block_ready) {
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+
             // Convert data to float
             arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
             arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
-            // CODE HERE (modify data)
-
+            // Process block of data
             master->ProcessBlock(data[0], data[1], BLOCK_SIZE);
             master->UpdateUI();
-
-            // CODE ENDS HERE
 
             // Convert data back to 16 bit unsigned integer
             arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
             arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
+
+            // Resetting block rady flag
             block_ready = 0;
+
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
         }
+
+        // Display the next character if DMA is ready for next transfer
         if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY){
             master->DisplayPop();
         }
