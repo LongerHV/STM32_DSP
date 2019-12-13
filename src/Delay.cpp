@@ -34,9 +34,9 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
             pData = pData_right;
         }
 
-        // Get tail blocks
+        // Get tail block
         channel->GetTailBlock(temp_fixed, block_size);
-        // Convert tail blocks from fixed to floating point format
+        // Convert tail block from fixed to floating point format
         arm_q15_to_float(temp_fixed, temp_float, block_size);
         // Prepare feedback block
         arm_scale_f32(temp_float, this->feedback, feedback_block, block_size);
@@ -44,7 +44,7 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
         // Convert feedback block to fixed point
         arm_float_to_q15(feedback_block, temp_fixed, block_size);
         // Feed delay block
-        channel->Feed(temp_fixed, block_size);
+        channel->FeedBlock(temp_fixed, block_size);
         // Dry gain
         arm_scale_f32(pData, this->dry_level, pData, block_size);
         // Wet gain
