@@ -39,10 +39,15 @@ void DelayBlock::ResetBuffer() {
 
 q15_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
     uint32_t tail_index;
-    if (offset > this->current + index) {
-        tail_index = this->max_delay - offset + this->current + index;
+    uint32_t current = this->current;
+    current += index;
+    if(current >= this->max_delay){
+        current -= this->max_delay;
+    }
+    if(current >= offset){
+        tail_index = current - offset;
     } else {
-        tail_index = this->current - offset + index;
+        tail_index = this->max_delay + current - offset;
     }
     return this->pData[tail_index];
 }
