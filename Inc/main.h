@@ -51,8 +51,8 @@ extern q15_t delay_buffer1[];
 extern q15_t delay_buffer2[];
 extern q15_t mod_buffer1[];
 extern q15_t mod_buffer2[];
-extern uint32_t input_sample[];
 extern uint8_t character_buffer[];
+extern uint32_t input_sample[];
 // extern Display *pDisp;
 /* USER CODE END ET */
 

@@ -42,6 +42,7 @@
 /* USER CODE BEGIN PD */
 #define AXI_SRAM_D1 __attribute__((section(".axi_sram_d1")))
 #define AHB_SRAM_D2 __attribute__((section(".ahb_sram_d2")))
+#define ALIGN_32 __attribute__((aligned(0x20)))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,15 +62,14 @@ q15_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
 q15_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
 q15_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
 q15_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
-uint32_t AHB_SRAM_D2 input_sample[8];
-uint8_t AHB_SRAM_D2 character_buffer[128];
+uint8_t AHB_SRAM_D2 ALIGN_32 character_buffer[128];
+uint32_t AHB_SRAM_D2 ALIGN_32 input_sample[2];
 
 // Defining global buffers
 uint16_t buffer[6][BLOCK_SIZE];
 uint16_t *input_buffer = buffer[0];
 uint16_t *hidden_buffer = buffer[2];
 uint16_t *output_buffer = buffer[4];
-uint16_t *temp_buffer;
 
 /* USER CODE END PV */
 
