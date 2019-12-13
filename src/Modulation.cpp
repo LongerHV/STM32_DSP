@@ -51,7 +51,7 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
 
         // Get tail block
         for(uint32_t i = 0; i < block_size; i++){
-            offset = channel->offset + channel->offset * (LFO[i] * this->depth); 
+            offset = channel->offset * (1 + (LFO[i] * this->depth));
             temp_fixed[i] = channel->GetSample(offset, i);
         }
 
