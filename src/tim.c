@@ -182,6 +182,7 @@ void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* tim_encoderHandle)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM2){
     // Reading samples from input to buffer
+    SCB_InvalidateDCache_by_Addr(input_sample, 32);
     input_buffer[block_counter] = (uint16_t)input_sample[0];
     input_buffer[block_counter+BLOCK_SIZE] = (uint16_t)input_sample[1];
 

@@ -5,8 +5,8 @@ Drive::Drive(const char *name) {
     this->number_of_parameters = 2;
     this->current_parameter = 0;
 
-    this->parameters[0] = new Parameter("Drive", " ", 5, 100, 5, 10);
-    this->parameters[1] = new Parameter("Volume", "%", 0, 100, 5, 100);
+    this->parameters[0] = new Parameter("Drive", " ", 5, 100, 5, 5);
+    this->parameters[1] = new Parameter("Volume", "%", 0, 100, 5, 50);
     for (uint8_t i = 2; i < 10; i++) parameters[i] = NULL;
 
     this->UpdateParameters();

@@ -42,6 +42,7 @@
 /* USER CODE BEGIN PD */
 #define AXI_SRAM_D1 __attribute__((section(".axi_sram_d1")))
 #define AHB_SRAM_D2 __attribute__((section(".ahb_sram_d2")))
+#define ALIGN_32 __attribute__((aligned(0x20)))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,19 +58,18 @@ uint16_t block_counter = 0;
 uint8_t block_ready = 0;
 
 // Allocation in different parts of memory
-q15_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
-q15_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
-q15_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
-q15_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
-uint32_t AHB_SRAM_D2 input_sample[8];
-uint8_t AHB_SRAM_D2 character_buffer[128];
+float32_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
+float32_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
+float32_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
+float32_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
+uint8_t AHB_SRAM_D2 ALIGN_32 character_buffer[128];
+uint32_t AHB_SRAM_D2 ALIGN_32 input_sample[2];
 
 // Defining global buffers
 uint16_t buffer[6][BLOCK_SIZE];
 uint16_t *input_buffer = buffer[0];
 uint16_t *hidden_buffer = buffer[2];
 uint16_t *output_buffer = buffer[4];
-uint16_t *temp_buffer;
 
 /* USER CODE END PV */
 
@@ -152,7 +152,7 @@ int main(void) {
     MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
     // Declaration of data buffer 
-    float data[2][BLOCK_SIZE];
+    float32_t data[2][BLOCK_SIZE];
 
     // HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
     // HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
@@ -163,23 +163,26 @@ int main(void) {
     while (true) {
         if (block_ready) {
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+
             // Convert data to float
             arm_uint16_to_float(&hidden_buffer[0], &data[0][0], BLOCK_SIZE);
             arm_uint16_to_float(&hidden_buffer[BLOCK_SIZE], &data[1][0], BLOCK_SIZE);
 
-            // CODE HERE (modify data)
-
+            // Process block of data
             master->ProcessBlock(data[0], data[1], BLOCK_SIZE);
             master->UpdateUI();
-
-            // CODE ENDS HERE
 
             // Convert data back to 16 bit unsigned integer
             arm_float_to_uint16(&data[0][0], &hidden_buffer[0], BLOCK_SIZE);
             arm_float_to_uint16(&data[1][0], &hidden_buffer[BLOCK_SIZE], BLOCK_SIZE);
+
+            // Resetting block rady flag
             block_ready = 0;
+
             HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
         }
+
+        // Display the next character if DMA is ready for next transfer
         if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY){
             master->DisplayPop();
         }
