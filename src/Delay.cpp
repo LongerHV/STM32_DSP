@@ -7,7 +7,7 @@ Delay::Delay(const char *name, DelayBlock *delay_left, DelayBlock *delay_right) 
     this->number_of_parameters = 4;
     this->current_parameter = 0;
 
-    this->parameters[0] = new Parameter("Time", "s", 100, 1000, 50, 500);
+    this->parameters[0] = new Parameter("Time", "s", 50, 1000, 50, 500);
     this->parameters[1] = new Parameter("Feedback", "%", 0, 100, 5, 75);
     this->parameters[2] = new Parameter("Dry level", "%", 0, 100, 5, 80);
     this->parameters[3] = new Parameter("Wet level", "%", 0, 100, 5, 50);
@@ -20,6 +20,7 @@ Delay::~Delay() {
 }
 
 void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) {
+    uint32_t current_index;
     float32_t *temp_float = new float32_t[block_size];
     float32_t *feedback_block = new float32_t[block_size];
     float32_t *pData;
@@ -32,6 +33,12 @@ void Delay::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t
             channel = this->delay_right;
             pData = pData_right;
         }
+
+        current_index = channel->current;
+
+        // Feed input
+        channel->FeedBlock(pData, block_size);
+        channel->SetCurrent(current_index);
 
         // Get tail block
         channel->GetTailBlock(temp_float, block_size);

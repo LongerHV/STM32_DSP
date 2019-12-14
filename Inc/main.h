@@ -91,13 +91,13 @@ void Error_Handler(void);
 #define LD2_Pin GPIO_PIN_1
 #define LD2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
-#define BLOCK_SIZE 128
+#define BLOCK_SIZE 512
 #define SAMPLING_RATE 48000
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
 #define ADC_RESOLUTION 16
-#define DELAY_SIZE 48000
-#define MODULATION_DELAY_SIZE 4800
+#define DELAY_SIZE (48000 + BLOCK_SIZE) // 1s + block size
+#define MODULATION_DELAY_SIZE (2 * 1440 + BLOCK_SIZE) // 30ms + block size
 
 
 /* USER CODE END Private defines */

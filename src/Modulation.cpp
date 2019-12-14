@@ -9,12 +9,12 @@ Modulation::Modulation(const char *name, DelayBlock *delay_left, DelayBlock *del
 
     this->number_of_parameters = 6;
     this->current_parameter = 0;
-    this->parameters[0] = new Parameter("Rate", "Hz", 500, 10000, 100, 1000);
-    this->parameters[1] = new Parameter("Depth", "%", 0, 100, 5, 0);
-    this->parameters[2] = new Parameter("Delay", "s", 1, 30, 1, 10);
-    this->parameters[3] = new Parameter("Feedback", "%", 0, 100, 5, 0);
-    this->parameters[4] = new Parameter("Dry level", "%", 0, 100, 5, 0);
-    this->parameters[5] = new Parameter("Wet level", "%", 0, 100, 5, 80);
+    this->parameters[0] = new Parameter("Rate", "Hz", 100, 10000, 100, 300);
+    this->parameters[1] = new Parameter("Depth", "%", 0, 95, 5, 95);
+    this->parameters[2] = new Parameter("Delay", "s", 1, 30, 1, 8);
+    this->parameters[3] = new Parameter("Feedback", "%", 0, 100, 5, 25);
+    this->parameters[4] = new Parameter("Dry level", "%", 0, 100, 5, 80);
+    this->parameters[5] = new Parameter("Wet level", "%", 0, 100, 5, 60);
     for (uint8_t i = 6; i < 10; i++) parameters[i] = NULL;
 
     this->UpdateParameters();
@@ -25,6 +25,8 @@ Modulation::~Modulation() {
 
 void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_t block_size) {
     uint32_t offset;
+    uint32_t current_index;
+
     float32_t *LFO = new float32_t[block_size];
     float32_t *temp_float = new float32_t[block_size];
     float32_t *feedback_block = new float32_t[block_size];
@@ -50,10 +52,11 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
             pData = pData_right;
         }
 
-        uint32_t current_index = channel->current;
+        current_index = channel->current;
 
         // Feed input
-        // channel->FeedBlock(pData)
+        channel->FeedBlock(pData, block_size);
+        channel->SetCurrent(current_index);
 
         // Get tail block
         for(uint32_t i = 0; i < block_size; i++){
