@@ -28,7 +28,8 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
     float32_t *LFO = new float32_t[block_size];
     float32_t *temp_float = new float32_t[block_size];
     float32_t *feedback_block = new float32_t[block_size];
-    q15_t *temp_fixed = new q15_t[block_size];
+
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
     // Calulate LFO value for every sample
     for(uint32_t i = 0; i < block_size; i++){
@@ -49,24 +50,23 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
             pData = pData_right;
         }
 
+        uint32_t current_index = channel->current;
+
+        // Feed input
+        // channel->FeedBlock(pData)
+
         // Get tail block
         for(uint32_t i = 0; i < block_size; i++){
             offset = channel->offset * (1 + (LFO[i] * this->depth));
-            temp_fixed[i] = channel->GetSample(offset, i);
+            temp_float[i] = channel->GetSample(offset, i);
         }
-
-        // Convert tail block from fixed to floating point format
-        arm_q15_to_float(temp_fixed, temp_float, block_size);
 
         // Prepare feedback block
         arm_scale_f32(temp_float, this->feedback, feedback_block, block_size);
         arm_add_f32(pData, feedback_block, feedback_block, block_size);
 
-        // Convert feedback block to fixed point
-        arm_float_to_q15(feedback_block, temp_fixed, block_size);
-
         // Feed delay block
-        channel->FeedBlock(temp_fixed, block_size);
+        channel->FeedBlock(feedback_block, block_size);
 
         // Dry gain
         arm_scale_f32(pData, this->dry_level, pData, block_size);
@@ -78,9 +78,10 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
         arm_add_f32(pData, temp_float, pData, block_size);
     }
 
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+
     delete[] LFO;
     delete[] temp_float;
-    delete[] temp_fixed;
     delete[] feedback_block;
 }
 

@@ -7,7 +7,7 @@
 
 class DelayBlock {
    private:
-    q15_t *pData;
+    float32_t *pData;
     uint32_t max_delay;
     uint32_t offset;
     uint32_t current;
@@ -15,13 +15,14 @@ class DelayBlock {
     friend class Modulation;
 
    public:
-    DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset);
+    DelayBlock(float32_t *pData, uint32_t max_delay, uint32_t offset);
     uint32_t GetMaxDelay();
     void SetOffset(uint32_t offset);
-    void GetTailBlock(q15_t *pDst, uint32_t block_size);
-    void FeedBlock(q15_t *pSrc, uint32_t block_size);
+    void SetCurrent(uint32_t current);
+    void GetTailBlock(float32_t *pDst, uint32_t block_size);
+    void FeedBlock(float32_t *pSrc, uint32_t block_size);
     void ResetBuffer();
-    q15_t GetSample(uint32_t offset, uint32_t index);
+    float32_t GetSample(uint32_t offset, uint32_t index);
 };
 
 #endif

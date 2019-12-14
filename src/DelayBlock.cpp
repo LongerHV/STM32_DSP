@@ -1,6 +1,6 @@
 #include "DelayBlock.h"
 
-DelayBlock::DelayBlock(q15_t *pData, uint32_t max_delay, uint32_t offset) {
+DelayBlock::DelayBlock(float32_t *pData, uint32_t max_delay, uint32_t offset) {
     this->pData = pData;
     this->max_delay = max_delay;
     this->offset = offset;
@@ -12,7 +12,7 @@ uint32_t DelayBlock::GetMaxDelay(){
     return this->max_delay;
 }
 
-void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size) {
+void DelayBlock::GetTailBlock(float32_t *pDst, uint32_t block_size) {
     uint32_t tail_index;
     for (uint32_t i = 0; i < block_size; i++) {
         if (this->offset > this->current + i) {
@@ -24,7 +24,7 @@ void DelayBlock::GetTailBlock(q15_t *pDst, uint32_t block_size) {
     }
 }
 
-void DelayBlock::FeedBlock(q15_t *pSrc, uint32_t block_size) {
+void DelayBlock::FeedBlock(float32_t *pSrc, uint32_t block_size) {
     for (uint32_t i = 0; i < block_size; i++) {
         this->pData[this->current] = pSrc[i];
         if (++this->current >= this->max_delay) {
@@ -34,10 +34,10 @@ void DelayBlock::FeedBlock(q15_t *pSrc, uint32_t block_size) {
 }
 
 void DelayBlock::ResetBuffer() {
-    arm_fill_q15(0, this->pData, this->max_delay);
+    arm_fill_f32(0, this->pData, this->max_delay);
 }
 
-q15_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
+float32_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
     uint32_t tail_index;
     uint32_t current = this->current;
     current += index;
@@ -50,4 +50,8 @@ q15_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
         tail_index = this->max_delay + current - offset;
     }
     return this->pData[tail_index];
+}
+
+void DelayBlock::SetCurrent(uint32_t current){
+    this->current = current;
 }

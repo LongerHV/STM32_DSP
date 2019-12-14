@@ -58,10 +58,10 @@ uint16_t block_counter = 0;
 uint8_t block_ready = 0;
 
 // Allocation in different parts of memory
-q15_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
-q15_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
-q15_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
-q15_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
+float32_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
+float32_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
+float32_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
+float32_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
 uint8_t AHB_SRAM_D2 ALIGN_32 character_buffer[128];
 uint32_t AHB_SRAM_D2 ALIGN_32 input_sample[2];
 
