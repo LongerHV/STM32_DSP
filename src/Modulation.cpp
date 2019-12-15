@@ -10,7 +10,7 @@ Modulation::Modulation(const char *name, DelayBlock *delay_left, DelayBlock *del
     this->number_of_parameters = 6;
     this->current_parameter = 0;
     this->parameters[0] = new Parameter("Rate", "Hz", 100, 10000, 100, 300);
-    this->parameters[1] = new Parameter("Depth", "%", 0, 95, 5, 95);
+    this->parameters[1] = new Parameter("Depth", "%", 0, 100, 5, 95);
     this->parameters[2] = new Parameter("Delay", "s", 1, 30, 1, 8);
     this->parameters[3] = new Parameter("Feedback", "%", 0, 100, 5, 25);
     this->parameters[4] = new Parameter("Dry level", "%", 0, 100, 5, 80);
@@ -30,8 +30,6 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
     float32_t *LFO = new float32_t[block_size];
     float32_t *temp_float = new float32_t[block_size];
     float32_t *feedback_block = new float32_t[block_size];
-
-    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
     // Calulate LFO value for every sample
     for(uint32_t i = 0; i < block_size; i++){
@@ -80,8 +78,6 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
         // Add Wet and Dry signals
         arm_add_f32(pData, temp_float, pData, block_size);
     }
-
-    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
     delete[] LFO;
     delete[] temp_float;
