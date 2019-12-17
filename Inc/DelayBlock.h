@@ -2,8 +2,8 @@
 #define DELAYBLOCK_H
 
 #include "arm_math.h"
-#include "mymath.h"
 #include "main.h"
+#include "mymath.h"
 
 class DelayBlock {
    private:

@@ -32,10 +32,10 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
     float32_t *feedback_block = new float32_t[block_size];
 
     // Calulate LFO value for every sample
-    for(uint32_t i = 0; i < block_size; i++){
+    for (uint32_t i = 0; i < block_size; i++) {
         LFO[i] = arm_sin_f32(this->phi);
         this->phi += this->rate * 2 * PI / (float32_t)SAMPLING_RATE;
-        if(this->phi >= 2 * PI)
+        if (this->phi >= 2 * PI)
             this->phi = 0;
     }
 
@@ -57,7 +57,7 @@ void Modulation::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uin
         channel->SetCurrent(current_index);
 
         // Get tail block
-        for(uint32_t i = 0; i < block_size; i++){
+        for (uint32_t i = 0; i < block_size; i++) {
             offset = channel->offset * (1 + (LFO[i] * this->depth));
             temp_float[i] = channel->GetSample(offset, i);
         }

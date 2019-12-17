@@ -30,8 +30,6 @@ class MultiEffect {
     uint8_t UpdateEncoder(TIM_HandleTypeDef *htim);
     void DisplayPop();
     void AddEffect(Effect *pNew);
-
-
 };
 
 #endif

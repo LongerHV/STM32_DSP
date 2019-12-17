@@ -8,7 +8,7 @@ DelayBlock::DelayBlock(float32_t *pData, uint32_t max_delay, uint32_t offset) {
     this->ResetBuffer();
 }
 
-uint32_t DelayBlock::GetMaxDelay(){
+uint32_t DelayBlock::GetMaxDelay() {
     return this->max_delay;
 }
 
@@ -37,14 +37,14 @@ void DelayBlock::ResetBuffer() {
     arm_fill_f32(0, this->pData, this->max_delay);
 }
 
-float32_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
+float32_t DelayBlock::GetSample(uint32_t offset, uint32_t index) {
     uint32_t tail_index;
     uint32_t current = this->current;
     current += index;
-    if(current >= this->max_delay){
+    if (current >= this->max_delay) {
         current -= this->max_delay;
     }
-    if(current >= offset){
+    if (current >= offset) {
         tail_index = current - offset;
     } else {
         tail_index = this->max_delay + current - offset;
@@ -52,6 +52,6 @@ float32_t DelayBlock::GetSample(uint32_t offset, uint32_t index){
     return this->pData[tail_index];
 }
 
-void DelayBlock::SetCurrent(uint32_t current){
+void DelayBlock::SetCurrent(uint32_t current) {
     this->current = current;
 }

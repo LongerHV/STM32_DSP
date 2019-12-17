@@ -11,7 +11,7 @@ Parameter::Parameter(const char *name, const char *unit, int32_t min, int32_t ma
     this->UpdateValRepr();
 }
 
-void Parameter::SetName(const char *name){
+void Parameter::SetName(const char *name) {
     uint8_t i;
     for (i = 0; name[i] != '\000' && i < 9; i++) {
         this->name[i] = name[i];
@@ -23,7 +23,7 @@ void Parameter::SetName(const char *name){
 }
 
 void Parameter::SetUnit(const char *unit) {
-    for(uint8_t i = 0; i < 3; i++) {
+    for (uint8_t i = 0; i < 3; i++) {
         this->unit[i] = unit[i];
     }
 }
@@ -59,8 +59,8 @@ void Parameter::SetValue(int32_t value) {
 void Parameter::UpdateValRepr() {
     int a, b = 0;
     char prefix = '\000';
-    if(this->unit[0] == 's'){
-        if (this->value >= 1000){
+    if (this->unit[0] == 's') {
+        if (this->value >= 1000) {
             a = this->value == 1000;
             b = (this->value % 1000) * 0.1;
         } else {
@@ -68,8 +68,8 @@ void Parameter::UpdateValRepr() {
             prefix = 'm';
         }
     } else if (this->unit[0] == 'H' && this->unit[1] == 'z') {
-        if (this->name[0] == 'F'){
-            if (this->value < 1000){
+        if (this->name[0] == 'F') {
+            if (this->value < 1000) {
                 a = this->value;
             } else {
                 a = this->value * 0.001;
@@ -89,14 +89,14 @@ void Parameter::UpdateValRepr() {
         b = (this->value % 1000) * 0.01;
     }
 
-    if(b){
-        if(prefix){
+    if (b) {
+        if (prefix) {
             snprintf(this->val_repr, 6, "%d.%d%c%s  ", a, b, prefix, this->unit);
         } else {
             snprintf(this->val_repr, 6, "%d.%d%s   ", a, b, this->unit);
         }
     } else {
-        if(prefix) {
+        if (prefix) {
             snprintf(this->val_repr, 6, "%d%c%s    ", a, prefix, this->unit);
         } else {
             snprintf(this->val_repr, 6, "%d%s     ", a, this->unit);

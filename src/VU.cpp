@@ -11,7 +11,7 @@ void VU::Update(float32_t *data, uint32_t block_size) {
     uint32_t dummy;
     arm_max_f32(data, block_size, &max, &dummy);
     arm_min_f32(data, block_size, &min, &dummy);
-    if (max > this->peak) 
+    if (max > this->peak)
         this->peak = max;
     if (-min > this->peak)
         this->peak = -min;

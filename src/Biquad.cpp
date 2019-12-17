@@ -66,7 +66,7 @@ void Biquad::RecalculateCoeffitients() {
             b1 = 2 * (K * K - 1) * norm;
             b2 = (1 - K / Q + K * K) * norm;
             break;
-        
+
         case NOTCH:
             norm = 1 / (1 + K / Q + K * K);
             a0 = (1 + K * K) * norm;
@@ -75,59 +75,56 @@ void Biquad::RecalculateCoeffitients() {
             b1 = a1;
             b2 = (1 - K / Q + K * K) * norm;
             break;
-        
+
         case PEAK:
-            if (peak_gain >= 0) {    // boost
-                norm = 1 / (1 + 1/Q * K + K * K);
-                a0 = (1 + V/Q * K + K * K) * norm;
+            if (peak_gain >= 0) {  // boost
+                norm = 1 / (1 + 1 / Q * K + K * K);
+                a0 = (1 + V / Q * K + K * K) * norm;
                 a1 = 2 * (K * K - 1) * norm;
-                a2 = (1 - V/Q * K + K * K) * norm;
+                a2 = (1 - V / Q * K + K * K) * norm;
                 b1 = a1;
-                b2 = (1 - 1/Q * K + K * K) * norm;
-            }
-            else {    // cut
-                norm = 1 / (1 + V/Q * K + K * K);
-                a0 = (1 + 1/Q * K + K * K) * norm;
+                b2 = (1 - 1 / Q * K + K * K) * norm;
+            } else {  // cut
+                norm = 1 / (1 + V / Q * K + K * K);
+                a0 = (1 + 1 / Q * K + K * K) * norm;
                 a1 = 2 * (K * K - 1) * norm;
-                a2 = (1 - 1/Q * K + K * K) * norm;
+                a2 = (1 - 1 / Q * K + K * K) * norm;
                 b1 = a1;
-                b2 = (1 - V/Q * K + K * K) * norm;
+                b2 = (1 - V / Q * K + K * K) * norm;
             }
             break;
         case LOWSHELF:
-            if (peak_gain >= 0) {    // boost
+            if (peak_gain >= 0) {  // boost
                 norm = 1 / (1 + sqrt(2) * K + K * K);
-                a0 = (1 + sqrt(2*V) * K + V * K * K) * norm;
+                a0 = (1 + sqrt(2 * V) * K + V * K * K) * norm;
                 a1 = 2 * (V * K * K - 1) * norm;
-                a2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
+                a2 = (1 - sqrt(2 * V) * K + V * K * K) * norm;
                 b1 = 2 * (K * K - 1) * norm;
                 b2 = (1 - sqrt(2) * K + K * K) * norm;
-            }
-            else {    // cut
-                norm = 1 / (1 + sqrt(2*V) * K + V * K * K);
+            } else {  // cut
+                norm = 1 / (1 + sqrt(2 * V) * K + V * K * K);
                 a0 = (1 + sqrt(2) * K + K * K) * norm;
                 a1 = 2 * (K * K - 1) * norm;
                 a2 = (1 - sqrt(2) * K + K * K) * norm;
                 b1 = 2 * (V * K * K - 1) * norm;
-                b2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
+                b2 = (1 - sqrt(2 * V) * K + V * K * K) * norm;
             }
             break;
         case HIGHSHELF:
-            if (peak_gain >= 0) {    // boost
+            if (peak_gain >= 0) {  // boost
                 norm = 1 / (1 + sqrt(2) * K + K * K);
-                a0 = (V + sqrt(2*V) * K + K * K) * norm;
+                a0 = (V + sqrt(2 * V) * K + K * K) * norm;
                 a1 = 2 * (K * K - V) * norm;
-                a2 = (V - sqrt(2*V) * K + K * K) * norm;
+                a2 = (V - sqrt(2 * V) * K + K * K) * norm;
                 b1 = 2 * (K * K - 1) * norm;
                 b2 = (1 - sqrt(2) * K + K * K) * norm;
-            }
-            else {    // cut
-                norm = 1 / (V + sqrt(2*V) * K + K * K);
+            } else {  // cut
+                norm = 1 / (V + sqrt(2 * V) * K + K * K);
                 a0 = (1 + sqrt(2) * K + K * K) * norm;
                 a1 = 2 * (K * K - 1) * norm;
                 a2 = (1 - sqrt(2) * K + K * K) * norm;
                 b1 = 2 * (K * K - V) * norm;
-                b2 = (V - sqrt(2*V) * K + K * K) * norm;
+                b2 = (V - sqrt(2 * V) * K + K * K) * norm;
             }
             break;
 
@@ -153,7 +150,7 @@ void Biquad::ProcessBlock(float32_t *pData_left, float32_t *pData_right, uint32_
     arm_biquad_cascade_df2T_f32(this->filter_instance_R, pData_right, pData_right, block_size);
 }
 
-void Biquad::UpdateParameters(){
+void Biquad::UpdateParameters() {
     this->type = this->parameters[0]->GetValue();
     this->Fc = this->parameters[1]->GetValue();
     this->Q = (float32_t)this->parameters[2]->GetValue() * 0.001;

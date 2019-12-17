@@ -2,8 +2,8 @@
 #include "Biquad.h"
 #include "Delay.h"
 #include "DelayBlock.h"
-#include "Modulation.h"
 #include "Drive.h"
+#include "Modulation.h"
 #include "main.h"
 
 MultiEffect::MultiEffect(TIM_HandleTypeDef *encoder_timer, SPI_HandleTypeDef *tft_spi) {
