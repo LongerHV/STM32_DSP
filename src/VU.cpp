@@ -15,6 +15,8 @@ void VU::Update(float32_t *data, uint32_t block_size) {
         this->peak = max;
     if (-min > this->peak)
         this->peak = -min;
+    if (this->peak >= 1)
+        this->peak = 1;
     if (this->counter++ >= 4) {
         uint16_t colour;
         this->peak *= 40;
