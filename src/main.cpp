@@ -57,10 +57,14 @@
 uint8_t block_ready = 0;
 
 // Allocation in different parts of memory
+
+// Delay buffers in AXI SRAM D1 (512K)
 float32_t AXI_SRAM_D1 delay_buffer1[DELAY_SIZE];
 float32_t AXI_SRAM_D1 delay_buffer2[DELAY_SIZE];
 float32_t AXI_SRAM_D1 mod_buffer1[MODULATION_DELAY_SIZE];
 float32_t AXI_SRAM_D1 mod_buffer2[MODULATION_DELAY_SIZE];
+
+// DMA buffers in AHB SRAM D2
 uint8_t AHB_SRAM_D2 ALIGN_32 character_buffer[128];
 uint32_t AHB_SRAM_D2 ALIGN_32 input_sample[2];
 

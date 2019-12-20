@@ -45,7 +45,6 @@ extern uint8_t block_ready;
 extern uint16_t* input_buffer;
 extern uint16_t* hidden_buffer;
 extern uint16_t* output_buffer;
-extern uint16_t* temp_buffer;
 extern float32_t delay_buffer1[];
 extern float32_t delay_buffer2[];
 extern float32_t mod_buffer1[];
