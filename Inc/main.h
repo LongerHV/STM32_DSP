@@ -41,7 +41,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-extern uint16_t block_counter;
 extern uint8_t block_ready;
 extern uint16_t* input_buffer;
 extern uint16_t* hidden_buffer;

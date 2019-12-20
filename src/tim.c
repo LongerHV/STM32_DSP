@@ -159,9 +159,13 @@ void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* tim_encoderHandle) {
 
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
+    static uint32_t block_counter = 0;
     if (htim->Instance == TIM2) {
-        // Reading samples from input to buffer
+
+        // Forcing samples to be moved from RAM to cache memory
         SCB_InvalidateDCache_by_Addr(input_sample, 32);
+
+        // Reading samples from input to buffer
         input_buffer[block_counter] = (uint16_t)input_sample[0];
         input_buffer[block_counter + BLOCK_SIZE] = (uint16_t)input_sample[1];
 
@@ -169,9 +173,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
         HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, output_buffer[block_counter] >> 4);
         HAL_DAC_SetValue(&hdac1, DAC1_CHANNEL_2, DAC_ALIGN_12B_R, output_buffer[block_counter + BLOCK_SIZE] >> 4);
 
+        // Swapping buffers when block is redy
         block_counter++;
         if (block_counter >= BLOCK_SIZE) {
-            // Swapping buffers
             uint16_t* temp = output_buffer;
             output_buffer = hidden_buffer;
             hidden_buffer = input_buffer;

@@ -54,7 +54,6 @@
 
 /* USER CODE BEGIN PV */
 // Global flags
-uint16_t block_counter = 0;
 uint8_t block_ready = 0;
 
 // Allocation in different parts of memory
