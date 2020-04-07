@@ -143,19 +143,12 @@ int main(void) {
     // SDRAM_InitSequence(&hsdram1);
     // HAL_Delay(100);
 
-    // TESTING FMC
-    // uint32_t *pSdram = (uint32_t *)0xD0000000;
-    // uint8_t Src[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
-    // uint8_t Dst[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
     // Creating master multieffect object
     MultiEffect *master = new MultiEffect(&htim4, &hspi1);
 
     // Declaration of data buffer 
     float32_t data[2][BLOCK_SIZE];
 
-    // HAL_SDRAM_Write_8b(&hsdram1, pSdram, &Src[0], 10);
-    // HAL_SDRAM_Read_8b(&hsdram1, pSdram, &Dst[0], 10);
     /* USER CODE END 2 */
 
     /* Infinite loop */

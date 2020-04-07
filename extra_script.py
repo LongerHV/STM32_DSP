@@ -17,3 +17,4 @@ env.Append(
         "-Wl,-T${PROJECT_DIR}/STM32H743ZI_FLASH.ld"
     ]
 )
+

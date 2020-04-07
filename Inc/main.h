@@ -96,7 +96,7 @@ void Error_Handler(void);
 #define NO_OF_CHANNELS 2
 #define NO_OF_BUFFERS 4
 #define ADC_RESOLUTION 16
-#define DELAY_SIZE (48000 + BLOCK_SIZE) // 1s + block size
+#define DELAY_SIZE (SAMPLING_RATE + BLOCK_SIZE) // 1s + block size
 #define MODULATION_DELAY_SIZE (2 * 1440 + BLOCK_SIZE) // 30ms + block size
 
 
